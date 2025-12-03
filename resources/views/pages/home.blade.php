@@ -21,11 +21,16 @@
             --border: #333333;
         }
 
-        body {
+        body.loomi-body {
             background-color: var(--dark);
             color: var(--text);
-            display: flex;
             min-height: 100vh;
+        }
+
+        .loomi-main {
+            width: calc(100% - 250px);
+            margin-left: 250px;
+            display: block;
         }
 
         /* Sidebar Styles */
@@ -101,9 +106,10 @@
 
         /* Main Content Styles */
         .main-content {
-            flex: 1;
-            margin-left: 250px;
-            padding: 20px;
+            flex: 1 1 auto;
+            width: 100%;
+            max-width: none;
+            padding: 20px 40px;
         }
 
         .header {
@@ -213,6 +219,20 @@
             border-radius: 50%;
             object-fit: cover;
             border: 2px solid var(--dark);
+        }
+
+        .story.watched .story-avatar {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .story.watched .story-avatar img {
+            filter: grayscale(0.6);
+            opacity: 0.6;
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .story.watched .story-username {
+            color: rgba(255, 255, 255, 0.5);
         }
 
         .story-username {
@@ -350,6 +370,8 @@
             background-color: rgba(255, 255, 255, 0.3);
             cursor: pointer;
             z-index: 15; 
+            touch-action: none;
+            user-select: none;
         }
 
         .video-progress-bar {
@@ -867,132 +889,352 @@
             cursor: pointer;
         }
         
-        /* --- NEW: Story Viewer Modal Styles --- */
-
-        @keyframes fillProgress {
-            from { width: 0%; }
-            to { width: 100%; }
-        }
-
-        #storyModal {
-            background-color: rgba(0, 0, 0, 0.9);
-            z-index: 2000;
+        /* --- Story Viewer Styles --- */
+        .story-modal-content {
+            width: 920px;
+            max-width: 96%;
+            max-height: 90vh;
+            border-radius: 18px;
+            background-color: var(--light-dark);
+            border: 1px solid var(--border);
+            padding: 20px;
+            overflow: hidden;
         }
 
         .story-viewer {
-            width: 100%;
-            height: 100%;
-            max-width: 450px; /* Phone-like aspect ratio */
-            max-height: 95vh;
-            background-color: #000;
-            border-radius: 10px;
-            overflow: hidden;
-            position: relative;
             display: flex;
-            flex-direction: column;
+            gap: 20px;
+            align-items: stretch;
+            height: 100%;
+            min-height: 0;
         }
 
-        .story-close-btn {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            font-size: 30px;
-            color: white;
-            background: none;
-            border: none;
-            cursor: pointer;
-            z-index: 20;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
+        .story-viewer-main {
+            flex: 1 1 65%;
+            background-color: #111;
+            border-radius: 18px;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            max-width: none;
+            margin: 0;
+            gap: 14px;
+            min-height: 0;
         }
 
         .story-progress-bars {
             display: flex;
-            gap: 4px;
-            padding: 10px;
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 15;
+            gap: 6px;
+            margin-bottom: 14px;
         }
 
-        .progress-bar {
+        .story-progress-track {
             flex: 1;
             height: 3px;
-            background-color: rgba(255, 255, 255, 0.3);
-            border-radius: 2px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.2);
             overflow: hidden;
         }
 
-        .progress-bar-fill {
+        .story-progress-fill {
             height: 100%;
-            width: 0%;
-            background-color: #fff;
-        }
-        
-        .progress-bar-fill.active {
-            animation: fillProgress 5s linear forwards;
+            width: 0;
+            background: #fff;
+            transition: width 0.15s linear;
         }
 
-        .progress-bar-fill.paused {
-            animation-play-state: paused;
+        .story-progress-track.completed .story-progress-fill {
+            width: 100%;
         }
 
-        .story-user-info {
-            position: absolute;
-            top: 25px; /* Below progress bars */
-            left: 15px;
-            z-index: 15;
+        .story-viewer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #fff;
+            margin-bottom: 12px;
+        }
+
+        .story-viewer-user {
             display: flex;
             align-items: center;
             gap: 10px;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
         }
 
-        .story-user-info img {
-            width: 32px;
-            height: 32px;
+        .story-viewer-user img {
+            width: 42px;
+            height: 42px;
             border-radius: 50%;
-            border: 2px solid var(--secondary);
-        }
-        
-        .story-user-info .story-username {
-            font-size: 14px;
-            font-weight: 600;
-            color: #fff;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            object-fit: cover;
         }
 
-        .story-media {
+        .story-viewer-user strong {
+            font-size: 15px;
+        }
+
+        .story-viewer-meta {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.2;
+        }
+
+        .story-viewer-meta span {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .story-viewer-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .story-pause-btn,
+        .story-mute-btn,
+        .story-nav {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            background: rgba(0, 0, 0, 0.35);
+            color: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s ease;
+        }
+
+        .story-pause-btn:hover,
+        .story-mute-btn:hover,
+        .story-nav:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .story-media-stage {
+            flex: 1 1 auto;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 14px;
+            overflow: hidden;
+            width: 100%;
+            aspect-ratio: 9 / 16;
+            height: clamp(360px, 60vh, 560px);
+            background: #000;
+            min-height: 0;
+        }
+
+        .story-media-inner {
             width: 100%;
             height: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
+            position: relative;
         }
 
-        .story-media img {
+        .story-media-inner img,
+        .story-media-inner video {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
-        
+
+        .story-media-inner video {
+            object-fit: contain;
+            background: #000;
+        }
+
         .story-nav {
             position: absolute;
-            top: 0;
-            height: 100%;
-            width: 50%;
-            z-index: 10;
-            cursor: pointer;
-        }
-        .story-nav.prev {
-            left: 0;
-        }
-        .story-nav.next {
-            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 2;
         }
 
+        .story-nav.prev { left: 12px; }
+        .story-nav.next { right: 12px; }
+
+        .story-caption { display: none; }
+
+        .story-response-overlay {
+            position: absolute;
+            left: 50%;
+            bottom: 16px;
+            transform: translateX(-50%);
+            width: calc(100% - 36px);
+            padding: 8px 14px;
+            background: rgba(0, 0, 0, 0.55);
+            border-radius: 999px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+        }
+
+        .story-like-btn {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s ease, transform 0.1s ease;
+        }
+
+        .story-like-btn.active {
+            background: #e74c3c;
+            border-color: #e74c3c;
+        }
+
+        .story-like-btn:active {
+            transform: scale(0.95);
+        }
+
+        .story-response-overlay .story-reply-input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .story-viewer-sidebar {
+            flex: 0 0 260px;
+            background: var(--dark);
+            border-radius: 16px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            border: 1px solid var(--border);
+            height: 100%;
+            min-height: 0;
+        }
+
+        .story-queue-list {
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding-right: 4px;
+            flex: 1 1 auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.5) transparent;
+        }
+
+        .story-queue-list::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .story-queue-list::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 999px;
+        }
+
+        .story-queue-list::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.45);
+            border-radius: 999px;
+        }
+
+        .story-queue-item {
+            background: transparent;
+            border: 1px solid transparent;
+            border-radius: 12px;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-align: left;
+            cursor: pointer;
+            color: var(--text);
+            transition: border-color 0.2s ease, background 0.2s ease;
+        }
+
+        .story-queue-item.active {
+            border-color: var(--primary);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .story-queue-thumb img {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid transparent;
+            transition: border-color 0.2s ease, filter 0.2s ease;
+        }
+
+        .story-queue-meta {
+            display: flex;
+            flex-direction: column;
+            font-size: 13px;
+        }
+
+        .story-queue-meta span:last-child {
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+
+        .story-viewer-sidebar h3 {
+            margin: 0;
+            font-size: 15px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .story-queue-item.watched {
+            opacity: 0.5;
+            border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .story-queue-item.watched .story-queue-thumb img {
+            border-color: rgba(255, 255, 255, 0.08);
+            filter: grayscale(0.6);
+        }
+
+        .story-queue-item.watched.active {
+            opacity: 1;
+            border-color: var(--primary);
+        }
+
+        .story-queue-item.watched.active .story-queue-thumb img {
+            filter: none;
+            border-color: var(--primary);
+        }
 
         /* Responsive Design */
+        @media (max-width: 992px) {
+            .story-viewer {
+                flex-direction: column;
+                height: auto;
+            }
+            .story-viewer-sidebar {
+                flex: 0 0 auto;
+                width: 100%;
+                max-height: 220px;
+                height: auto;
+            }
+            .story-queue-list {
+                max-height: 160px;
+            }
+            .story-media-stage {
+                height: clamp(360px, 65vh, 600px);
+            }
+        }
+
         @media (max-width: 1100px) {
             .sidebar {
                 width: 80px;
@@ -1003,22 +1245,57 @@
             .logo-img { margin-right: 0; }
             .nav-links a { justify-content: center; padding: 15px; }
             .nav-links i { margin-right: 0; font-size: 22px; }
-            .main-content { margin-left: 80px; }
+            .loomi-main {
+                margin-left: 80px;
+                width: calc(100% - 80px);
+            }
         }
 
         @media (max-width: 768px) {
             .search-bar { width: 200px; }
             .user-actions i:nth-child(2), .user-actions i:nth-child(3) { display: none; }
             .story-viewer { max-width: 100%; height: 100%; max-height: 100%; border-radius: 0; }
+            .story-viewer-main { padding: 12px; }
+            .story-modal-content { padding: 15px; }
+            .story-viewer-sidebar { max-height: 250px; }
+            .story-media-stage { height: clamp(320px, 60vh, 520px); }
         }
 
         @media (max-width: 576px) {
             .sidebar { display: none; }
-            .main-content { margin-left: 0; }
+            .loomi-main {
+                margin-left: 0;
+                width: 100%;
+            }
+            .main-content { flex: 1; }
             .search-bar { width: 150px; }
+            .story-modal-content { padding: 10px; }
+            .story-viewer-sidebar { max-height: 200px; padding: 10px; }
+            .story-reply-bar { flex-wrap: wrap; }
+            .story-media-stage { height: clamp(260px, 55vh, 420px); }
         }
     </style>
 @endpush
+
+@php
+    $storyMediaPayloads = [
+        'fy_hamza' => [
+            [
+                'type' => 'video',
+                'src' => asset('videos/bg.mp4'),
+                'caption' => 'Match warm-up sprint.',
+                'postedAgo' => 'Just now',
+            ],
+            [
+                'type' => 'image',
+                'src' => 'https://images.unsplash.com/photo-1517927033932-b3d18e61fb3a?auto=format&fit=crop&w=900&q=80',
+                'caption' => 'Locker room energy is unreal.',
+                'duration' => 6,
+                'postedAgo' => '10 min ago',
+            ],
+        ],
+    ];
+@endphp
 
 @section('content')
     <div class="main-content">
@@ -1029,47 +1306,58 @@
                 <h2>Stories</h2>
             </div>
             <div class="stories-container">
-                <div class="story">
+                <div class="story" data-story-id="your-story" data-last-active="Just now">
                     <div class="story-avatar">
                         <img src="https://i.pravatar.cc/150?img=1" alt="User">
                     </div>
                     <div class="story-username">Your Story</div>
                 </div>
-                <div class="story">
+                <div
+                    class="story"
+                    data-story-id="fy_hamza"
+                    data-last-active="3 min ago"
+                    data-story-media='{!! json_encode($storyMediaPayloads['fy_hamza'], JSON_UNESCAPED_SLASHES) !!}'
+                >
                     <div class="story-avatar">
                         <img src="https://i.pravatar.cc/150?img=12" alt="User">
                     </div>
+                    <div class="story-username">@fy_hamza</div>
+                </div>
+                <div class="story" data-story-id="elbotola" data-last-active="10 min ago">
+                    <div class="story-avatar">
+                        <img src="https://i.pravatar.cc/150?img=14" alt="User">
+                    </div>
+                    <div class="story-username">@elbotola</div>
+                </div>
+                <div class="story" data-story-id="emma" data-last-active="22 min ago">
+                    <div class="story-avatar">
+                        <img src="https://i.pravatar.cc/150?img=18" alt="User">
+                    </div>
                     <div class="story-username">Emma</div>
                 </div>
-                <div class="story">
+                <div class="story" data-story-id="alex" data-last-active="45 min ago">
                     <div class="story-avatar">
                         <img src="https://i.pravatar.cc/150?img=8" alt="User">
                     </div>
                     <div class="story-username">Alex</div>
                 </div>
-                <div class="story">
+                <div class="story" data-story-id="sarah" data-last-active="1 h ago">
                     <div class="story-avatar">
                         <img src="https://i.pravatar.cc/150?img=5" alt="User">
                     </div>
                     <div class="story-username">Sarah</div>
                 </div>
-                <div class="story">
+                <div class="story" data-story-id="mike" data-last-active="2 h ago">
                     <div class="story-avatar">
                         <img src="https://i.pravatar.cc/150?img=11" alt="User">
                     </div>
                     <div class="story-username">Mike</div>
                 </div>
-                <div class="story">
+                <div class="story" data-story-id="lisa" data-last-active="3 h ago">
                     <div class="story-avatar">
                         <img src="https://i.pravatar.cc/150?img=3" alt="User">
                     </div>
                     <div class="story-username">Lisa</div>
-                </div>
-                <div class="story">
-                    <div class="story-avatar">
-                        <img src="https://i.pravatar.cc/150?img=7" alt="User">
-                    </div>
-                    <div class="story-username">David</div>
                 </div>
             </div>
         </div>
@@ -1129,7 +1417,7 @@
                     </div>
                     <div class="post-media single">
                         <video autoplay muted loop playsinline>
-                            <source src="bg.mp4" type="video/mp4">
+                            <source src="{{ asset('videos/bg.mp4') }}" type="video/mp4">
                             Your browser does not support the video tag.
                         </video>
                         <div class="video-play-pause-btn">
@@ -1246,23 +1534,50 @@
     </div>
 
     <div class="modal" id="storyModal">
-        <button class="story-close-btn" id="storyModalClose">&times;</button>
-        <div class="story-viewer">
-            
-            <div class="story-progress-bars" id="storyProgressBars">
+        <div class="modal-overlay"></div>
+        <div class="modal-content story-modal-content">
+            <div class="story-viewer">
+                <div class="story-viewer-main">
+                    <div class="story-progress-bars" id="storyProgressBars"></div>
+                    <div class="story-viewer-header">
+                        <div class="story-viewer-user">
+                            <img src="https://i.pravatar.cc/150?img=1" alt="Story avatar" id="storyAvatar">
+                            <div class="story-viewer-meta">
+                                <strong id="storyUsername">@fy_hamza</strong>
+                                <span id="storyTime">3 min ago</span>
+                            </div>
+                        </div>
+                        <div class="story-viewer-actions">
+                            <button class="story-pause-btn" id="storyPauseBtn" aria-label="Pause story">
+                                <i class="fas fa-pause"></i>
+                            </button>
+                            <button class="story-mute-btn" id="storyMuteBtn" aria-label="Mute story">
+                                <i class="fas fa-volume-mute"></i>
+                            </button>
+                            <button class="modal-close-btn story-close-btn" aria-label="Close story viewer">&times;</button>
+                        </div>
+                    </div>
+                    <div class="story-media-stage">
+                        <button class="story-nav prev" id="storyPrevBtn" aria-label="Previous story">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <div class="story-media-inner" id="storyMediaInner"></div>
+                        <button class="story-nav next" id="storyNextBtn" aria-label="Next story">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                        <div class="story-response-overlay">
+                            <button type="button" class="story-like-btn" id="storyLikeBtn" aria-label="Like story">
+                                <i class="far fa-heart"></i>
+                            </button>
+                            <input type="text" class="story-reply-input" id="storyReplyInput" placeholder="Reply...">
+                        </div>
+                    </div>
                 </div>
-
-            <div class="story-user-info" id="storyModalUser">
-                <img src="" alt="avatar">
-                <span class="story-username"></span>
+                <div class="story-viewer-sidebar">
+                    <h3>All stories</h3>
+                    <div class="story-queue-list" id="storyQueueList"></div>
+                </div>
             </div>
-            
-            <div class="story-media" id="storyModalMedia">
-                <img src="" alt="Story content">
-            </div>
-
-            <div class="story-nav prev" id="storyNavPrev"></div>
-            <div class="story-nav next" id="storyNavNext"></div>
         </div>
     </div>
 @endpush
@@ -1288,17 +1603,14 @@
             
             function closeModal() {
                 modal.classList.remove('active');
-                if (modal.id === 'storyModal') {
-                    closeStoryModal(); // Special close function for stories
+                if (modal.id === 'storyModal' && window.__loomiStopStoryPlayback) {
+                    window.__loomiStopStoryPlayback();
                 }
             }
             
             if (overlay) overlay.addEventListener('click', closeModal);
             if (closeBtn) closeBtn.addEventListener('click', closeModal);
         });
-
-        // Story modal has its own close button
-        document.getElementById('storyModalClose').addEventListener('click', closeStoryModal);
 
 
         // --- Wire Up Header Buttons ---
@@ -1399,126 +1711,864 @@
         // ... (Your existing logic for post likes and video players) ...
         
         // --- (Copied from previous step for completeness) ---
-        document.querySelectorAll('.like-btn').forEach(button => {
-            button.addEventListener('click', function() { /* ... like logic ... */ });
+        // --- Like Buttons ---
+        document.querySelectorAll('.post').forEach(post => {
+            const likeBtn = post.querySelector('.like-btn');
+            const likesLabel = post.querySelector('.post-likes');
+            if (!likeBtn) return;
+
+            const baseLikes = (() => {
+                if (!likesLabel) return 0;
+                const stored = likesLabel.dataset.baseLikes;
+                if (stored) return parseInt(stored, 10) || 0;
+                const match = likesLabel.textContent.match(/(\d+)/);
+                const value = match ? parseInt(match[1], 10) : 0;
+                likesLabel.dataset.baseLikes = value;
+                return value;
+            })();
+
+            let liked = false;
+
+            const updateLikeVisuals = () => {
+                likeBtn.classList.toggle('liked', liked);
+                const icon = likeBtn.querySelector('i');
+                if (icon) {
+                    icon.classList.toggle('fas', liked);
+                    icon.classList.toggle('far', !liked);
+                }
+                if (likesLabel) {
+                    const count = liked ? baseLikes + 1 : baseLikes;
+                    likesLabel.textContent = `${count} likes`;
+                }
+            };
+
+            likeBtn.addEventListener('click', () => {
+                liked = !liked;
+                updateLikeVisuals();
+            });
         });
+
+        // --- Inline Video Player ---
         document.querySelectorAll('.post video').forEach(video => {
-            /* ... all video player logic (play/pause, mute, progress) ... */
+            const mediaContainer = video.closest('.post-media');
+            const playButton = mediaContainer?.querySelector('.video-play-pause-btn');
+            const progressContainer = mediaContainer?.querySelector('.video-progress-container');
+            const progressBar = mediaContainer?.querySelector('.video-progress-bar');
+            const muteButton = mediaContainer?.querySelector('.video-mute-btn');
+
+            const updatePlayState = () => {
+                if (!mediaContainer) return;
+                mediaContainer.classList.toggle('paused', video.paused);
+                if (playButton) {
+                    const icon = playButton.querySelector('i');
+                    if (icon) {
+                        icon.classList.toggle('fa-play', video.paused);
+                        icon.classList.toggle('fa-pause', !video.paused);
+                    }
+                }
+            };
+
+            const updateMuteIcon = () => {
+                if (!muteButton) return;
+                const icon = muteButton.querySelector('i');
+                if (!icon) return;
+                icon.classList.toggle('fa-volume-mute', video.muted);
+                icon.classList.toggle('fa-volume-up', !video.muted);
+            };
+
+            const togglePlay = () => {
+                if (video.paused) {
+                    video.play();
+                } else {
+                    video.pause();
+                }
+            };
+
+            video.addEventListener('click', togglePlay);
+            playButton?.addEventListener('click', event => {
+                event.stopPropagation();
+                togglePlay();
+            });
+
+            video.addEventListener('play', updatePlayState);
+            video.addEventListener('pause', updatePlayState);
+            video.addEventListener('loadedmetadata', updatePlayState);
+
+            video.addEventListener('timeupdate', () => {
+                if (!progressBar || !video.duration) return;
+                const progress = (video.currentTime / video.duration) * 100;
+                progressBar.style.width = `${progress}%`;
+            });
+
+            if (progressContainer) {
+                let isDragging = false;
+                let wasPlaying = false;
+
+                const clamp = value => Math.min(Math.max(value, 0), 1);
+
+                const seekWithClientX = clientX => {
+                    if (!video.duration) return;
+                    const rect = progressContainer.getBoundingClientRect();
+                    const ratio = clamp((clientX - rect.left) / rect.width);
+                    video.currentTime = ratio * video.duration;
+                    if (progressBar) {
+                        progressBar.style.width = `${ratio * 100}%`;
+                    }
+                };
+
+                const handleMouseMove = event => {
+                    if (!isDragging) return;
+                    event.preventDefault();
+                    seekWithClientX(event.clientX);
+                };
+
+                const handleTouchMove = event => {
+                    if (!isDragging) return;
+                    if (event.touches?.[0]) {
+                        seekWithClientX(event.touches[0].clientX);
+                    }
+                };
+
+                const stopDragging = event => {
+                    if (!isDragging) return;
+                    event.preventDefault();
+                    if (event.changedTouches?.[0]) {
+                        seekWithClientX(event.changedTouches[0].clientX);
+                    } else if (typeof event.clientX === 'number') {
+                        seekWithClientX(event.clientX);
+                    }
+                    isDragging = false;
+                    document.removeEventListener('mousemove', handleMouseMove);
+                    document.removeEventListener('mouseup', stopDragging);
+                    document.removeEventListener('touchmove', handleTouchMove);
+                    document.removeEventListener('touchend', stopDragging);
+                    document.removeEventListener('touchcancel', stopDragging);
+                    if (wasPlaying) {
+                        video.play();
+                    }
+                };
+
+                const startDragging = clientX => {
+                    if (!video.duration) return;
+                    isDragging = true;
+                    wasPlaying = !video.paused;
+                    video.pause();
+                    seekWithClientX(clientX);
+                    document.addEventListener('mousemove', handleMouseMove);
+                    document.addEventListener('mouseup', stopDragging);
+                    document.addEventListener('touchmove', handleTouchMove, { passive: false });
+                    document.addEventListener('touchend', stopDragging);
+                    document.addEventListener('touchcancel', stopDragging);
+                };
+
+                progressContainer.addEventListener('mousedown', event => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    startDragging(event.clientX);
+                });
+
+                progressContainer.addEventListener('touchstart', event => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    if (event.touches?.[0]) {
+                        startDragging(event.touches[0].clientX);
+                    }
+                }, { passive: false });
+            }
+
+            muteButton?.addEventListener('click', event => {
+                event.stopPropagation();
+                video.muted = !video.muted;
+                updateMuteIcon();
+            });
+
+            updatePlayState();
+            updateMuteIcon();
         });
+
+        // --- Multi-media Carousel ---
         document.querySelectorAll('.post-media.multi').forEach(mediaContainer => {
-            /* ... all multi-image carousel logic ... */
+            const mediaItems = mediaContainer.querySelectorAll('.media-item');
+            if (mediaItems.length <= 1) return;
+
+            const navPrev = mediaContainer.querySelector('.nav-btn.prev');
+            const navNext = mediaContainer.querySelector('.nav-btn.next');
+            const indicators = mediaContainer.querySelectorAll('.indicator');
+            const countBadge = mediaContainer.querySelector('.media-count');
+            let currentIndex = 0;
+
+            const updateView = () => {
+                mediaItems.forEach((item, index) => {
+                    item.style.display = index === currentIndex ? 'block' : 'none';
+                });
+
+                indicators.forEach((indicator, index) => {
+                    indicator.classList.toggle('active', index === currentIndex);
+                });
+
+                if (countBadge) {
+                    countBadge.textContent = `${currentIndex + 1}/${mediaItems.length}`;
+                }
+            };
+
+            const goToIndex = newIndex => {
+                const total = mediaItems.length;
+                currentIndex = (newIndex + total) % total;
+                updateView();
+            };
+
+            navPrev?.addEventListener('click', event => {
+                event.stopPropagation();
+                goToIndex(currentIndex - 1);
+            });
+
+            navNext?.addEventListener('click', event => {
+                event.stopPropagation();
+                goToIndex(currentIndex + 1);
+            });
+
+            indicators.forEach((indicator, index) => {
+                indicator.addEventListener('click', event => {
+                    event.stopPropagation();
+                    goToIndex(index);
+                });
+            });
+
+            updateView();
         });
         // --- (End of copied logic) ---
 
 
-        // --- NEW: Story Viewer Logic ---
-        
-        const allStories = document.querySelectorAll('.story');
-        let storyData = [];
-        let currentStoryIndex = 0;
-        let storyAnimationTimeout;
-        let currentProgressBarFill;
+        // --- Story Viewer Logic ---
+        (function setupStoryViewer() {
+            const storyCards = Array.from(document.querySelectorAll('.story'));
+            if (!storyCards.length) return;
 
-        allStories.forEach((story, index) => {
-            story.addEventListener('click', () => {
-                openStoryModal(index);
+            const storyModalElement = storyModal;
+            const storyRowContainer = document.querySelector('.stories-container');
+            const storyMediaInner = document.getElementById('storyMediaInner');
+            const storyProgressBars = document.getElementById('storyProgressBars');
+            const storyQueueList = document.getElementById('storyQueueList');
+            const storyUsernameEl = document.getElementById('storyUsername');
+            const storyAvatarEl = document.getElementById('storyAvatar');
+            const storyTimeEl = document.getElementById('storyTime');
+            const storyReplyInput = document.getElementById('storyReplyInput');
+            const storyLikeBtn = document.getElementById('storyLikeBtn');
+            const storyMuteBtn = document.getElementById('storyMuteBtn');
+            const storyPrevBtn = document.getElementById('storyPrevBtn');
+            const storyNextBtn = document.getElementById('storyNextBtn');
+            const storyPauseBtn = document.getElementById('storyPauseBtn');
+
+            if (!storyModalElement || !storyMediaInner || !storyQueueList || !storyProgressBars) return;
+
+            const inferStoryId = card => {
+                if (!card) return '';
+                if (card.dataset.storyId) return card.dataset.storyId;
+                const label = card.querySelector('.story-username')?.textContent.trim().toLowerCase() || '';
+                return label.replace(/\s+/g, '-') || '';
+            };
+
+            const storyCardMap = new Map();
+            storyCards.forEach(card => {
+                const id = inferStoryId(card);
+                if (id) {
+                    storyCardMap.set(id, card);
+                }
             });
-        });
 
-        function openStoryModal(clickedIndex) {
-            storyData = []; // Re-build story data array
-            allStories.forEach(storyEl => {
-                storyData.push({
-                    img: storyEl.querySelector('.story-avatar img').src,
-                    username: storyEl.querySelector('.story-username').textContent
+            const sanitizeStoryItem = (item, fallbackTime) => {
+                if (!item) return null;
+                const type = item.type === 'video' ? 'video' : 'image';
+                const src = item.src || item.url || item.path;
+                if (!src) return null;
+                return {
+                    type,
+                    src,
+                    duration: item.duration ? Number(item.duration) : undefined,
+                    caption: item.caption || '',
+                    postedAgo: item.postedAgo || fallbackTime
+                };
+            };
+
+            const parseStoryMediaData = (card, fallbackTime) => {
+                const raw = card.dataset.storyMedia;
+                if (!raw) return null;
+                try {
+                    const parsed = JSON.parse(raw);
+                    if (!Array.isArray(parsed)) return null;
+                    const items = parsed
+                        .map(entry => sanitizeStoryItem(entry, fallbackTime))
+                        .filter(Boolean);
+                    return items.length ? items : null;
+                } catch (error) {
+                    console.warn('Invalid story media data found. Ignoring entry.', error);
+                    return null;
+                }
+            };
+
+            const buildEntryFromCard = (card, storyId, storiesOverride) => {
+                const displayName = card.querySelector('.story-username')?.textContent.trim() || 'Story';
+                const avatar = card.querySelector('.story-avatar img')?.src || '';
+                const lastActive = card.dataset.lastActive || 'moments ago';
+                const resolvedId = storyId || displayName.toLowerCase().replace(/\s+/g, '-');
+                const stories = storiesOverride && storiesOverride.length ? storiesOverride : [
+                    {
+                        type: 'image',
+                        src: avatar,
+                        duration: 5,
+                        caption: '',
+                        postedAgo: lastActive
+                    }
+                ];
+                return {
+                    id: resolvedId,
+                    displayName,
+                    username: displayName,
+                    avatar,
+                    lastActive,
+                    watched: false,
+                    stories
+                };
+            };
+
+            const baseStoryData = [
+                {
+                    id: 'your-story',
+                    displayName: 'Your Story',
+                    username: '@you',
+                    avatar: 'https://i.pravatar.cc/150?img=1',
+                    lastActive: 'Just now',
+                    watched: false,
+                    stories: [
+                        {
+                            type: 'image',
+                            src: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=900&q=80',
+                            duration: 5,
+                            postedAgo: 'Just now'
+                        },
+                        {
+                            type: 'image',
+                            src: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=900&q=80',
+                            duration: 5,
+                            postedAgo: '5 min ago'
+                        }
+                    ]
+                },
+                {
+                    id: 'fy_hamza',
+                    displayName: 'fy_hamza',
+                    username: '@fy_hamza',
+                    avatar: 'https://i.pravatar.cc/150?img=12',
+                    lastActive: '3 min ago',
+                    watched: false,
+                    stories: [
+                        {
+                            type: 'image',
+                            src: 'https://images.unsplash.com/photo-1521412644187-c49fa049e84d?auto=format&fit=crop&w=900&q=80',
+                            duration: 6,
+                            postedAgo: '3 min ago'
+                        },
+                        {
+                            type: 'image',
+                            src: 'https://images.unsplash.com/photo-1517927033932-b3d18e61fb3a?auto=format&fit=crop&w=900&q=80',
+                            duration: 6,
+                            postedAgo: '10 min ago'
+                        }
+                    ]
+                },
+                {
+                    id: 'elbotola',
+                    displayName: 'elbotola',
+                    username: '@elbotola',
+                    avatar: 'https://i.pravatar.cc/150?img=14',
+                    lastActive: '10 min ago',
+                    watched: false,
+                    stories: [
+                        {
+                            type: 'image',
+                            src: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=900&q=80',
+                            duration: 5,
+                            postedAgo: '10 min ago'
+                        },
+                        {
+                            type: 'image',
+                            src: 'https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&w=900&q=80',
+                            duration: 5,
+                            postedAgo: '12 min ago'
+                        }
+                    ]
+                },
+                {
+                    id: 'emma',
+                    displayName: 'Emma',
+                    username: '@emma',
+                    avatar: 'https://i.pravatar.cc/150?img=18',
+                    lastActive: '22 min ago',
+                    watched: false,
+                    stories: [
+                        {
+                            type: 'image',
+                            src: 'https://images.unsplash.com/photo-1475180098004-ca77a66827be?auto=format&fit=crop&w=900&q=80',
+                            duration: 5,
+                            postedAgo: '22 min ago'
+                        },
+                        {
+                            type: 'image',
+                            src: 'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=900&q=80',
+                            duration: 5,
+                            postedAgo: '25 min ago'
+                        }
+                    ]
+                },
+                {
+                    id: 'alex',
+                    displayName: 'Alex',
+                    username: '@alex',
+                    avatar: 'https://i.pravatar.cc/150?img=8',
+                    lastActive: '45 min ago',
+                    watched: false,
+                    stories: [
+                        {
+                            type: 'image',
+                            src: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80',
+                            duration: 5,
+                            postedAgo: '45 min ago'
+                        }
+                    ]
+                },
+                {
+                    id: 'sarah',
+                    displayName: 'Sarah',
+                    username: '@sarah',
+                    avatar: 'https://i.pravatar.cc/150?img=5',
+                    lastActive: '1 h ago',
+                    watched: false,
+                    stories: [
+                        {
+                            type: 'image',
+                            src: 'https://images.unsplash.com/photo-1459257868276-5e65389e2722?auto=format&fit=crop&w=900&q=80',
+                            duration: 5,
+                            postedAgo: '1 h ago'
+                        }
+                    ]
+                },
+                {
+                    id: 'mike',
+                    displayName: 'Mike',
+                    username: '@mike',
+                    avatar: 'https://i.pravatar.cc/150?img=11',
+                    lastActive: '2 h ago',
+                    watched: false,
+                    stories: [
+                        {
+                            type: 'image',
+                            src: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=900&q=80',
+                            duration: 5,
+                            postedAgo: '2 h ago'
+                        }
+                    ]
+                },
+                {
+                    id: 'lisa',
+                    displayName: 'Lisa',
+                    username: '@lisa',
+                    avatar: 'https://i.pravatar.cc/150?img=3',
+                    lastActive: '3 h ago',
+                    watched: false,
+                    stories: [
+                        {
+                            type: 'image',
+                            src: 'https://images.unsplash.com/photo-1433838552652-f9a46b332c40?auto=format&fit=crop&w=900&q=80',
+                            duration: 5,
+                            postedAgo: '3 h ago'
+                        }
+                    ]
+                }
+            ];
+
+            const storyDataMap = baseStoryData.reduce((acc, entry) => {
+                acc[entry.id] = entry;
+                return acc;
+            }, {});
+
+            const cloneStoryUser = user => ({
+                ...user,
+                watched: Boolean(user.watched),
+                stories: (user.stories || []).map(story => ({ ...story }))
+            });
+
+            let storySequence = [];
+
+            storyCards.forEach(card => {
+                const storyId = inferStoryId(card);
+                const lastActive = card.dataset.lastActive || 'moments ago';
+                const customMedia = parseStoryMediaData(card, lastActive);
+
+                if (customMedia && customMedia.length) {
+                    storySequence.push(buildEntryFromCard(card, storyId, customMedia));
+                    return;
+                }
+
+                if (storyId && storyDataMap[storyId]) {
+                    storySequence.push(cloneStoryUser(storyDataMap[storyId]));
+                    return;
+                }
+
+                storySequence.push(buildEntryFromCard(card, storyId));
+            });
+
+            baseStoryData.forEach(user => {
+                if (!storySequence.some(entry => entry.id === user.id)) {
+                    storySequence.push(cloneStoryUser(user));
+                }
+            });
+
+            if (!storySequence.length) return;
+
+            let activeUserIndex = 0;
+            let activeStoryIndex = 0;
+            let activeProgressFill = null;
+            let storyInterval = null;
+            let activeVideoElement = null;
+            let isStoryPaused = false;
+            let storyLiked = false;
+            let storyMuted = true;
+
+            const getActiveUser = () => storySequence[activeUserIndex];
+            const getActiveStory = () => getActiveUser()?.stories[activeStoryIndex];
+
+            const cleanupPlayback = () => {
+                clearInterval(storyInterval);
+                storyInterval = null;
+                if (activeVideoElement) {
+                    activeVideoElement.pause();
+                    activeVideoElement.currentTime = 0;
+                }
+                activeVideoElement = null;
+            };
+
+            const resetPauseButton = () => {
+                isStoryPaused = false;
+                if (storyPauseBtn) {
+                    storyPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                }
+            };
+
+            window.__loomiStopStoryPlayback = () => {
+                cleanupPlayback();
+                resetPauseButton();
+            };
+
+            const updateStoryLikeButton = () => {
+                if (!storyLikeBtn) return;
+                storyLikeBtn.classList.toggle('active', storyLiked);
+                storyLikeBtn.innerHTML = `<i class="${storyLiked ? 'fas' : 'far'} fa-heart"></i>`;
+            };
+
+            const resetStoryResponseState = () => {
+                storyLiked = false;
+                if (storyReplyInput) {
+                    storyReplyInput.value = '';
+                }
+                updateStoryLikeButton();
+            };
+
+            const sendStoryReply = () => {
+                if (!storyReplyInput) return;
+                const message = storyReplyInput.value.trim();
+                if (!message) return;
+                const user = getActiveUser();
+                const story = getActiveStory();
+                console.log(`Reply to ${user?.displayName || 'story'} (${story?.type || 'image'}):`, message);
+                storyReplyInput.value = '';
+            };
+
+            const syncVideoMuteState = () => {
+                if (activeVideoElement) {
+                    activeVideoElement.muted = storyMuted;
+                    activeVideoElement.volume = storyMuted ? 0 : 1;
+                }
+            };
+
+            const updateStoryMuteButton = story => {
+                if (!storyMuteBtn) return;
+                const isVideo = story?.type === 'video';
+                storyMuteBtn.style.display = isVideo ? 'flex' : 'none';
+                storyMuteBtn.innerHTML = `<i class="fas fa-volume-${storyMuted ? 'mute' : 'up'}"></i>`;
+                storyMuteBtn.setAttribute('aria-label', storyMuted ? 'Unmute story' : 'Mute story');
+            };
+
+            function renderStoryRail() {
+                if (!storyRowContainer || !storyCardMap.size) return;
+                const fragment = document.createDocumentFragment();
+                storySequence.forEach(user => {
+                    const card = storyCardMap.get(user.id);
+                    if (!card) return;
+                    card.classList.toggle('watched', Boolean(user.watched));
+                    fragment.appendChild(card);
+                });
+                storyRowContainer.appendChild(fragment);
+            }
+
+            function renderQueue() {
+                storyQueueList.innerHTML = '';
+                storySequence.forEach((user, index) => {
+                    const isActive = index === activeUserIndex;
+                    const item = document.createElement('button');
+                    item.type = 'button';
+                    item.className = `story-queue-item${isActive ? ' active' : ''}${user.watched ? ' watched' : ''}`;
+                    item.innerHTML = `
+                        <div class="story-queue-thumb">
+                            <img src="${user.avatar}" alt="${user.displayName}">
+                        </div>
+                        <div class="story-queue-meta">
+                            <span>${user.displayName}</span>
+                            <span>${user.lastActive}</span>
+                        </div>
+                    `;
+                    item.addEventListener('click', () => {
+                        goToUser(index, 0);
+                    });
+                    storyQueueList.appendChild(item);
+                });
+                renderStoryRail();
+            }
+
+            function markUserWatched(index) {
+                const user = storySequence[index];
+                if (!user || user.watched || user.id === 'your-story') return;
+                const originalLength = storySequence.length;
+                user.watched = true;
+                const [removed] = storySequence.splice(index, 1);
+                storySequence.push(removed);
+                if (index === activeUserIndex) {
+                    if (originalLength <= 1) {
+                        activeUserIndex = 0;
+                    } else if (index >= originalLength - 1) {
+                        activeUserIndex = 0;
+                    } else {
+                        activeUserIndex = index;
+                    }
+                } else if (index < activeUserIndex) {
+                    activeUserIndex = Math.max(activeUserIndex - 1, 0);
+                }
+                renderQueue();
+            }
+
+            function renderProgressBars(user) {
+                storyProgressBars.innerHTML = '';
+                activeProgressFill = null;
+                (user.stories || []).forEach((story, index) => {
+                    const track = document.createElement('div');
+                    track.className = 'story-progress-track';
+                    if (index < activeStoryIndex) {
+                        track.classList.add('completed');
+                    }
+                    const fill = document.createElement('div');
+                    fill.className = 'story-progress-fill';
+                    if (index < activeStoryIndex) {
+                        fill.style.width = '100%';
+                    }
+                    track.appendChild(fill);
+                    storyProgressBars.appendChild(track);
+                    if (index === activeStoryIndex) {
+                        activeProgressFill = fill;
+                    }
+                });
+            }
+
+            function startStoryTimer(durationSeconds) {
+                clearInterval(storyInterval);
+                const seconds = durationSeconds && durationSeconds > 0 ? durationSeconds : 5;
+                let elapsed = 0;
+                const total = seconds * 1000;
+                if (activeProgressFill) {
+                    activeProgressFill.style.width = '0%';
+                }
+                storyInterval = setInterval(() => {
+                    if (isStoryPaused) return;
+                    elapsed += 50;
+                    const ratio = Math.min(elapsed / total, 1);
+                    if (activeProgressFill) {
+                        activeProgressFill.style.width = `${ratio * 100}%`;
+                    }
+                    if (ratio >= 1) {
+                        clearInterval(storyInterval);
+                        storyInterval = null;
+                        nextStory();
+                    }
+                }, 50);
+            }
+
+            function renderStory() {
+                const user = getActiveUser();
+                const story = getActiveStory();
+                if (!user || !story) return;
+
+                cleanupPlayback();
+                resetPauseButton();
+                resetStoryResponseState();
+
+                if (storyUsernameEl) {
+                    storyUsernameEl.textContent = user.displayName;
+                }
+                if (storyAvatarEl) {
+                    storyAvatarEl.src = user.avatar;
+                    storyAvatarEl.alt = `${user.displayName} avatar`;
+                }
+                if (storyTimeEl) {
+                    storyTimeEl.textContent = story.postedAgo || user.lastActive;
+                }
+                if (storyReplyInput) {
+                    storyReplyInput.placeholder = `Reply to ${user.displayName}...`;
+                }
+
+                renderProgressBars(user);
+                updateStoryMuteButton(story);
+
+                storyMediaInner.innerHTML = '';
+                if (story.type === 'video') {
+                    const video = document.createElement('video');
+                    video.src = story.src;
+                    video.autoplay = true;
+                    video.muted = storyMuted;
+                    video.playsInline = true;
+                    video.controls = false;
+                    video.loop = false;
+                    video.preload = 'auto';
+                    storyMediaInner.appendChild(video);
+                    activeVideoElement = video;
+
+                    const updateVideoProgress = () => {
+                        if (!activeProgressFill || !video.duration || Number.isNaN(video.duration)) return;
+                        const ratio = Math.min(video.currentTime / video.duration, 1);
+                        activeProgressFill.style.width = `${ratio * 100}%`;
+                    };
+
+                    video.addEventListener('timeupdate', updateVideoProgress);
+                    video.addEventListener('ended', () => nextStory());
+                    if (video.readyState >= 1) {
+                        updateVideoProgress();
+                    } else {
+                        video.addEventListener('loadedmetadata', updateVideoProgress, { once: true });
+                    }
+                    syncVideoMuteState();
+                } else {
+                    const img = document.createElement('img');
+                    img.src = story.src;
+                    img.alt = story.caption || user.displayName;
+                    storyMediaInner.appendChild(img);
+                    startStoryTimer(story.duration);
+                }
+
+                renderQueue();
+            }
+
+            function goToUser(index, storyIndex = 0) {
+                const total = storySequence.length;
+                if (!total) return;
+                activeUserIndex = ((index % total) + total) % total;
+                const user = getActiveUser();
+                if (!user) return;
+                activeStoryIndex = Math.min(Math.max(storyIndex, 0), (user.stories.length || 1) - 1);
+                renderStory();
+            }
+
+            function nextStory() {
+                const user = getActiveUser();
+                if (!user) return;
+                if (activeStoryIndex < user.stories.length - 1) {
+                    activeStoryIndex += 1;
+                    renderStory();
+                } else {
+                    const completedIndex = activeUserIndex;
+                    markUserWatched(completedIndex);
+                    if (user.id === 'your-story') {
+                        goToUser(completedIndex + 1, 0);
+                    } else {
+                        goToUser(completedIndex, 0);
+                    }
+                }
+            }
+
+            function prevStory() {
+                if (activeStoryIndex > 0) {
+                    activeStoryIndex -= 1;
+                    renderStory();
+                    return;
+                }
+                const total = storySequence.length;
+                const targetIndex = ((activeUserIndex - 1) % total + total) % total;
+                const targetUser = storySequence[targetIndex];
+                const lastStoryIndex = Math.max((targetUser?.stories.length || 1) - 1, 0);
+                goToUser(targetIndex, lastStoryIndex);
+            }
+
+            storyPrevBtn?.addEventListener('click', event => {
+                event.stopPropagation();
+                prevStory();
+            });
+
+            storyNextBtn?.addEventListener('click', event => {
+                event.stopPropagation();
+                nextStory();
+            });
+
+            storyPauseBtn?.addEventListener('click', event => {
+                event.stopPropagation();
+                isStoryPaused = !isStoryPaused;
+                if (activeVideoElement) {
+                    if (isStoryPaused) {
+                        activeVideoElement.pause();
+                    } else {
+                        activeVideoElement.play();
+                    }
+                }
+                storyPauseBtn.innerHTML = `<i class="fas fa-${isStoryPaused ? 'play' : 'pause'}"></i>`;
+            });
+
+            storyMuteBtn?.addEventListener('click', event => {
+                event.stopPropagation();
+                storyMuted = !storyMuted;
+                syncVideoMuteState();
+                updateStoryMuteButton(getActiveStory());
+            });
+
+            storyLikeBtn?.addEventListener('click', event => {
+                event.stopPropagation();
+                storyLiked = !storyLiked;
+                updateStoryLikeButton();
+            });
+
+            storyReplyInput?.addEventListener('keydown', event => {
+                if (event.key === 'Enter' && !event.shiftKey) {
+                    event.preventDefault();
+                    sendStoryReply();
+                }
+            });
+
+            storyMediaInner.addEventListener('click', event => {
+                if (!storySequence.length) return;
+                const bounds = storyMediaInner.getBoundingClientRect();
+                const clickX = event.clientX - bounds.left;
+                if (clickX < bounds.width / 2) {
+                    prevStory();
+                } else {
+                    nextStory();
+                }
+            });
+
+            storyCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    const targetId = card.dataset.storyId;
+                    const targetIndex = storySequence.findIndex(user => user.id === targetId);
+                    goToUser(targetIndex === -1 ? 0 : targetIndex, 0);
+                    openModal(storyModalElement);
                 });
             });
-            
-            currentStoryIndex = clickedIndex;
-            showStory(currentStoryIndex);
-            storyModal.classList.add('active');
-        }
 
-        function showStory(index) {
-            // Get data
-            const story = storyData[index];
-            
-            // 1. Update Media
-            document.querySelector('#storyModalMedia img').src = story.img;
-            
-            // 2. Update User Info
-            const userInfo = document.getElementById('storyModalUser');
-            userInfo.querySelector('img').src = story.img;
-            userInfo.querySelector('.story-username').textContent = story.username;
-
-            // 3. Build/Reset Progress Bars
-            const progressBarsContainer = document.getElementById('storyProgressBars');
-            progressBarsContainer.innerHTML = ''; // Clear old bars
-            
-            storyData.forEach((_, i) => {
-                const barWrapper = document.createElement('div');
-                barWrapper.className = 'progress-bar';
-                
-                const barFill = document.createElement('div');
-                barFill.className = 'progress-bar-fill';
-                
-                if (i < index) {
-                    barFill.style.width = '100%'; // Already watched
-                }
-                
-                barWrapper.appendChild(barFill);
-                progressBarsContainer.appendChild(barWrapper);
-            });
-
-            // 4. Animate Current Bar
-            currentProgressBarFill = progressBarsContainer.children[index].querySelector('.progress-bar-fill');
-            
-            // Clear any previous animation
-            if (storyAnimationTimeout) clearTimeout(storyAnimationTimeout);
-            
-            // Start the new animation
-            setTimeout(() => {
-                currentProgressBarFill.classList.add('active');
-                
-                storyAnimationTimeout = setTimeout(showNextStory, 5000); // 5000ms = 5s (matches CSS)
-            }, 10);
-        }
-
-        function showNextStory() {
-            if (currentStoryIndex < storyData.length - 1) {
-                currentStoryIndex++;
-                showStory(currentStoryIndex);
-            } else {
-                closeStoryModal();
-            }
-        }
-
-        function showPrevStory() {
-            if (currentStoryIndex > 0) {
-                currentStoryIndex--;
-                showStory(currentStoryIndex);
-            }
-        }
-
-        function closeStoryModal() {
-            if (storyAnimationTimeout) clearTimeout(storyAnimationTimeout);
-            if (currentProgressBarFill) currentProgressBarFill.classList.remove('active');
-            storyModal.classList.remove('active');
-        }
-
-        document.getElementById('storyNavNext').addEventListener('click', showNextStory);
-        document.getElementById('storyNavPrev').addEventListener('click', showPrevStory);
-
-        const storyViewer = document.querySelector('.story-viewer');
-        storyViewer.addEventListener('mousedown', () => {
-            if (currentProgressBarFill) currentProgressBarFill.classList.add('paused');
-            if (storyAnimationTimeout) clearTimeout(storyAnimationTimeout);
-        });
-
-        storyViewer.addEventListener('mouseup', () => {
-            if (currentProgressBarFill) currentProgressBarFill.classList.remove('paused');
-            storyAnimationTimeout = setTimeout(showNextStory, 5000); 
-        });
+            renderQueue();
+        })();
         
     </script>
 @endpush
