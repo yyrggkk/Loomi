@@ -561,7 +561,7 @@
         <div class="loopi-feed" id="loopiFeed">
             <div class="loopi-item">
                 <video class="loopi-video" loop muted playsinline>
-                    <source src="C:\Users\talbi\Videos\Captures\bg.mp4" type="video/mp4">
+                    <source src="{{ asset('videos/bg.mp4') }}" type="video/mp4">
                 </video>
                 
                 <div class="loopi-progress-container">
