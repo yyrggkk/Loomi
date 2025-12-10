@@ -923,6 +923,26 @@
 
                 loopiFeed.addEventListener('scroll', checkNavButtons);
                 setTimeout(checkNavButtons, 150);
+
+                const isTyping = target => {
+                    if (!target) return false;
+                    const tag = target.tagName?.toLowerCase();
+                    return tag === 'input' || tag === 'textarea' || target.isContentEditable;
+                };
+
+                document.addEventListener('keydown', event => {
+                    if (isTyping(event.target)) return;
+                    if (event.key === 'ArrowDown') {
+                        event.preventDefault();
+                        loopiFeed.scrollBy({ top: loopiFeed.clientHeight, behavior: 'smooth' });
+                        checkNavButtons();
+                    }
+                    if (event.key === 'ArrowUp') {
+                        event.preventDefault();
+                        loopiFeed.scrollBy({ top: -loopiFeed.clientHeight, behavior: 'smooth' });
+                        checkNavButtons();
+                    }
+                });
             }
             
             document.querySelectorAll('.loopi-progress-container').forEach(container => {
