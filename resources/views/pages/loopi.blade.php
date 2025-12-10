@@ -24,9 +24,22 @@
         body {
             background-color: var(--dark);
             color: var(--text);
-            display: flex;
             min-height: 100vh;
             overflow: hidden;
+        }
+
+        .loomi-layout {
+            display: flex;
+            min-height: 100vh;
+            width: 100%;
+        }
+
+        .loomi-main {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
         }
 
         .sidebar {
@@ -607,7 +620,7 @@
             
             <div class="loopi-item">
                 <video class="loopi-video" loop muted playsinline>
-                    <source src="video2.mp4" type="video/mp4">
+                    <source src="#" type="video/mp4">
                 </video>
                 
                 <div class="loopi-progress-container">
@@ -652,7 +665,7 @@
 
             <div class="loopi-item">
                 <video class="loopi-video" loop muted playsinline>
-                    <source src="video3.mp4" type="video/mp4">
+                    <source src="#" type="video/mp4">
                 </video>
                 
                 <div class="loopi-progress-container">
