@@ -531,72 +531,6 @@
             color: #2ecc71;
         }
 
-        /* --- Modal Styles --- */
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1000;
-            display: none; 
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal.active {
-            display: flex; 
-        }
-
-        .modal-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            z-index: 1;
-            cursor: pointer;
-        }
-
-        .modal-content {
-            background-color: var(--light-dark);
-            width: 500px;
-            max-width: 90%;
-            border-radius: 10px;
-            z-index: 2;
-            display: flex;
-            flex-direction: column;
-            max-height: 80vh;
-            border: 1px solid var(--border);
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 20px;
-            border-bottom: 1px solid var(--border);
-            flex-shrink: 0;
-        }
-
-        .modal-header h2 {
-            font-size: 20px;
-        }
-
-        .modal-close-btn {
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            font-size: 28px;
-            cursor: pointer;
-            transition: color 0.3s;
-        }
-
-        .modal-close-btn:hover {
-            color: var(--text);
-        }
-
         /* --- Comment Modal Styles --- */
         .comment-list {
             list-style: none;
@@ -749,145 +683,7 @@
             cursor: pointer;
         }
 
-        /* --- Notification & Activity Modal Styles --- */
-        .activity-list {
-            list-style: none;
-            padding: 0;
-            overflow-y: auto;
-            flex: 1;
-        }
-        
-        .activity-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 15px 20px;
-            border-bottom: 1px solid var(--border);
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        
-        .activity-item:hover {
-            background-color: rgba(255, 255, 255, 0.05);
-        }
-        
-        .activity-item .post-avatar { 
-            width: 45px;
-            height: 45px;
-            font-size: 16px;
-            flex-shrink: 0;
-        }
-        
-        .activity-text {
-            flex: 1;
-            font-size: 14px;
-            line-height: 1.5;
-        }
-        
-        .activity-text strong {
-            font-weight: 600;
-            color: var(--text);
-        }
-        
-        .activity-time {
-            color: var(--text-secondary);
-            font-size: 12px;
-            margin-left: 5px;
-        }
-        
-        .activity-thumbnail {
-            width: 45px;
-            height: 45px;
-            object-fit: cover;
-            border-radius: 4px;
-            flex-shrink: 0;
-        }
-        
-        /* --- Upload Modal Styles --- */
-        .upload-drop-area {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 40px;
-            margin: 20px;
-            border: 2px dashed var(--border);
-            border-radius: 10px;
-            background-color: var(--dark);
-            color: var(--text-secondary);
-            text-align: center;
-        }
-        
-        .upload-drop-area i {
-            font-size: 48px;
-            margin-bottom: 15px;
-        }
-        
-        .upload-drop-area p {
-            font-size: 16px;
-            margin-bottom: 15px;
-        }
-        
-        .upload-select-btn {
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-        
-        #fileInput {
-            display: none;
-        }
-        
-        .upload-preview-area {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            gap: 10px;
-            padding: 0 20px 20px;
-            overflow-y: auto;
-        }
-        
-        .preview-image {
-            width: 100%;
-            height: 100px;
-            object-fit: cover;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-        }
-        
-        .upload-form {
-            padding: 20px;
-            border-top: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        
-        .upload-caption {
-            background-color: var(--dark);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 10px 15px;
-            color: var(--text);
-            outline: none;
-            resize: none;
-            height: 80px;
-            font-family: inherit;
-        }
-        
-        .upload-post-btn {
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 16px;
-            cursor: pointer;
-        }
+        /* Notification & Activity and Upload modal styles are now defined in header.blade.php */
         
         /* --- Story Viewer Styles --- */
         .story-modal-content {
@@ -1486,53 +1282,6 @@
         </div>
     </div>
 
-    <div class="modal" id="notificationsModal">
-        <div class="modal-overlay"></div>
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Notifications</h2>
-                <button class="modal-close-btn">&times;</button>
-            </div>
-            <ul class="activity-list">
-                </ul>
-        </div>
-    </div>
-    
-    <div class="modal" id="activityModal">
-        <div class="modal-overlay"></div>
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Activity</h2>
-                <button class="modal-close-btn">&times;</button>
-            </div>
-             <ul class="activity-list">
-                </ul>
-        </div>
-    </div>
-    
-    <div class="modal" id="uploadModal">
-        <div class="modal-overlay"></div>
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Create new post</h2>
-                <button class="modal-close-btn">&times;</button>
-            </div>
-            <div class="upload-drop-area" id="dropArea">
-                <i class="fas fa-photo-video"></i>
-                <p>Drag photos and videos here</p>
-                <label for="fileInput" class="upload-select-btn">
-                    Select from computer
-                </label>
-                <input type="file" id="fileInput" multiple accept="image/*,video/*">
-            </div>
-            <div class="upload-preview-area" id="previewArea"></div>
-            <div class="upload-form">
-                <textarea class="upload-caption" placeholder="Write a caption..."></textarea>
-                <button class="upload-post-btn">Post</button>
-            </div>
-        </div>
-    </div>
-
     <div class="modal" id="storyModal">
         <div class="modal-overlay"></div>
         <div class="modal-content story-modal-content">
@@ -1588,9 +1337,6 @@
         
         const commentModal = document.getElementById('commentModal');
         const shareModal = document.getElementById('shareModal');
-        const notificationsModal = document.getElementById('notificationsModal');
-        const activityModal = document.getElementById('activityModal');
-        const uploadModal = document.getElementById('uploadModal');
         const storyModal = document.getElementById('storyModal'); // New Story Modal
 
         function openModal(modal) {
@@ -1612,11 +1358,6 @@
             if (closeBtn) closeBtn.addEventListener('click', closeModal);
         });
 
-
-        // --- Wire Up Header Buttons ---
-        document.getElementById('openUploadBtn').addEventListener('click', () => openModal(uploadModal));
-        document.getElementById('openActivityBtn').addEventListener('click', () => openModal(activityModal));
-        document.getElementById('openNotificationsBtn').addEventListener('click', () => openModal(notificationsModal));
 
         // --- Wire Up Post Buttons ---
         
@@ -1669,43 +1410,6 @@
                 alert(`Sent to ${user}!`);
             });
         });
-
-        // 3. Upload Modal
-        const dropArea = document.getElementById('dropArea');
-        const fileInput = document.getElementById('fileInput');
-        const previewArea = document.getElementById('previewArea');
-        fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
-        dropArea.addEventListener('dragover', (e) => { e.preventDefault(); dropArea.style.borderColor = 'var(--primary)'; });
-        dropArea.addEventListener('dragleave', () => { dropArea.style.borderColor = 'var(--border)'; });
-        dropArea.addEventListener('drop', (e) => {
-            e.preventDefault();
-            dropArea.style.borderColor = 'var(--border)';
-            handleFiles(e.dataTransfer.files);
-        });
-        function handleFiles(files) {
-            previewArea.innerHTML = ''; 
-            if (files.length === 0) return;
-            Array.from(files).forEach(file => {
-                if (file.type.startsWith('image/')) {
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        const img = document.createElement('img');
-                        img.src = e.target.result;
-                        img.className = 'preview-image';
-                        previewArea.appendChild(img);
-                    }
-                    reader.readAsDataURL(file);
-                }
-            });
-        }
-        document.querySelector('.upload-post-btn').addEventListener('click', () => {
-             alert('Post created! (Simulation)');
-             uploadModal.classList.remove('active');
-             previewArea.innerHTML = '';
-             document.querySelector('.upload-caption').value = '';
-        });
-        // --- (End of copied logic) ---
-
 
         // --- Other Page Logic (Likes, Video Player) ---
         // ... (Your existing logic for post likes and video players) ...

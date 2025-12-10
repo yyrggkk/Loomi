@@ -22,9 +22,6 @@
                         <div class="profile-actions">
                             <button class="btn btn-secondary" id="editProfileBtn">Edit Profile</button>
                             <button class="btn btn-secondary">Share Profile</button>
-                            <button class="btn btn-icon" aria-label="More options">
-                                <i class="fas fa-ellipsis-h" aria-hidden="true"></i>
-                            </button>
                         </div>
                     </div>
                     <div class="stats">
@@ -47,7 +44,6 @@
                             Creative director &amp; lifestyle storyteller.<br>
                             Obsessed with bold color palettes and cozy city corners.
                         </p>
-                        <a href="https://aliciarose.studio" class="profile-website" id="profileWebsite" target="_blank" rel="noreferrer noopener">aliciarose.studio</a>
                     </div>
                 </div>
             </div>
@@ -188,19 +184,41 @@
                 <div class="reels-grid">
                     <div class="reel-card">
                         <div class="reel-thumb">
-                            <img src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=500&q=80" alt="Reel thumbnail">
+                            <video muted loop playsinline preload="metadata">
+                                <source src="{{ asset('videos/bg.mp4') }}" type="video/mp4">
+                            </video>
+                            <div class="post-overlay">
+                                <div class="post-stat">
+                                    <i class="fas fa-heart" aria-hidden="true"></i>
+                                    <span>24K</span>
+                                </div>
+                                <div class="post-stat">
+                                    <i class="fas fa-comment" aria-hidden="true"></i>
+                                    <span>1.2K</span>
+                                </div>
+                            </div>
                         </div>
                         <div class="reel-meta">
-                            <h4>Color Story | Loft</h4>
                             <p>24K views · 2d</p>
                         </div>
                     </div>
                     <div class="reel-card">
                         <div class="reel-thumb">
-                            <img src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=500&q=80" alt="Reel thumbnail">
+                            <video muted loop playsinline preload="metadata">
+                                <source src="{{ asset('videos/bg.mp4') }}" type="video/mp4">
+                            </video>
+                            <div class="post-overlay">
+                                <div class="post-stat">
+                                    <i class="fas fa-heart" aria-hidden="true"></i>
+                                    <span>19K</span>
+                                </div>
+                                <div class="post-stat">
+                                    <i class="fas fa-comment" aria-hidden="true"></i>
+                                    <span>870</span>
+                                </div>
+                            </div>
                         </div>
                         <div class="reel-meta">
-                            <h4>Behind the Scenes</h4>
                             <p>19K views · 5d</p>
                         </div>
                     </div>
@@ -667,8 +685,8 @@
 
         .reels-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
         }
 
         .reel-card {
@@ -680,14 +698,30 @@
             flex-direction: column;
         }
 
-        .reel-thumb img {
+        .reel-thumb {
+            position: relative;
+            overflow: hidden;
+            aspect-ratio: 1 / 1;
+        }
+
+        .reel-thumb img,
+        .reel-thumb video {
             width: 100%;
-            height: 220px;
+            height: 100%;
             object-fit: cover;
+            display: block;
+        }
+
+        .reel-card .post-overlay {
+            opacity: 0;
+        }
+
+        .reel-card:hover .post-overlay {
+            opacity: 1;
         }
 
         .reel-meta {
-            padding: 16px;
+            padding: 14px;
         }
 
         .reel-meta h4 {
@@ -852,6 +886,10 @@
             .posts-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
+
+            .reels-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
 
         @media (max-width: 576px) {
@@ -864,6 +902,10 @@
             }
 
             .posts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .reels-grid {
                 grid-template-columns: 1fr;
             }
         }
@@ -1016,6 +1058,25 @@ Obsessed with bold color palettes and cozy city corners.</textarea>
                 highlight.addEventListener('click', () => {
                     const highlightName = highlight.querySelector('.highlight-name').textContent;
                     alert(`Viewing ${highlightName} highlight`);
+                });
+            });
+
+            // Hover-to-play for reel videos; reset to first frame on leave (like explore trending videos).
+            const reelVideos = document.querySelectorAll('.reel-thumb video');
+            reelVideos.forEach(video => {
+                const card = video.closest('.reel-card');
+                if (!card) return;
+
+                video.pause();
+                video.currentTime = 0;
+
+                card.addEventListener('mouseenter', () => {
+                    video.play().catch(() => {});
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    video.pause();
+                    video.currentTime = 0;
                 });
             });
         });
