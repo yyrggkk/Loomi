@@ -105,6 +105,7 @@
             margin-left: 250px;
             padding: 0;
             display: flex;
+            width: calc(100vw - 250px);
         }
 
         .inbox-sidebar {
@@ -257,6 +258,7 @@
 
         .chat-area {
             flex: 1;
+            min-width: 0; /* allow flex to consume full remaining width without forcing shrink */
             display: flex;
             flex-direction: column;
             height: 100vh;
@@ -777,9 +779,6 @@
                     </button>
                     <button class="chat-action-btn">
                         <i class="fas fa-video"></i>
-                    </button>
-                    <button class="chat-action-btn">
-                        <i class="fas fa-info-circle"></i>
                     </button>
                 </div>
             </div>
