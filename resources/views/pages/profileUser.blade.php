@@ -22,12 +22,6 @@
                         <div class="profile-actions">
                             <button class="btn btn-primary" id="followBtn">Follow</button>
                             <button class="btn btn-secondary">Message</button>
-                            <button class="btn-icon" aria-label="Add user">
-                                <i class="fas fa-user-plus" aria-hidden="true"></i>
-                            </button>
-                            <button class="btn-icon" aria-label="More options">
-                                <i class="fas fa-ellipsis-h" aria-hidden="true"></i>
-                            </button>
                         </div>
                     </div>
                     <div class="stats">
@@ -58,35 +52,35 @@
             <div class="highlights">
                 <div class="highlights-title">Highlights</div>
                 <div class="highlights-container">
-                    <div class="highlight-item">
+                    <div class="highlight-item" data-highlight-id="travel">
                         <div class="highlight-avatar">
                             <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=200&q=80" alt="Travel highlight">
                         </div>
-                        <div class="highlight-name">Travel</div>
+                        <span class="highlight-name">Travel</span>
                     </div>
-                    <div class="highlight-item">
+                    <div class="highlight-item" data-highlight-id="food">
                         <div class="highlight-avatar">
                             <img src="https://images.unsplash.com/photo-1565958011703-44f9829ba187?auto=format&fit=crop&w=200&q=80" alt="Food highlight">
                         </div>
-                        <div class="highlight-name">Food</div>
+                        <span class="highlight-name">Food</span>
                     </div>
-                    <div class="highlight-item">
+                    <div class="highlight-item" data-highlight-id="fitness">
                         <div class="highlight-avatar">
                             <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=200&q=80" alt="Fitness highlight">
                         </div>
-                        <div class="highlight-name">Fitness</div>
+                        <span class="highlight-name">Fitness</span>
                     </div>
-                    <div class="highlight-item">
+                    <div class="highlight-item" data-highlight-id="beach">
                         <div class="highlight-avatar">
                             <img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=200&q=80" alt="Beach highlight">
                         </div>
-                        <div class="highlight-name">Beach</div>
+                        <span class="highlight-name">Beach</span>
                     </div>
-                    <div class="highlight-item">
+                    <div class="highlight-item" data-highlight-id="nature">
                         <div class="highlight-avatar">
                             <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=200&q=80" alt="Nature highlight">
                         </div>
-                        <div class="highlight-name">Nature</div>
+                        <span class="highlight-name">Nature</span>
                     </div>
                 </div>
             </div>
@@ -98,17 +92,14 @@
                 </a>
                 <a href="#" class="nav-item" data-tab="reels">
                     <i class="fas fa-clapperboard" aria-hidden="true"></i>
-                    <span>Reels</span>
-                </a>
-                <a href="#" class="nav-item" data-tab="saved">
-                    <i class="fas fa-bookmark" aria-hidden="true"></i>
-                    <span>Saved</span>
+                    <span>Loopis</span>
                 </a>
             </div>
         </section>
 
         <section class="profile-feed">
-            <div class="posts-grid">
+            <div class="profile-content-grid active" id="posts-content">
+                <div class="posts-grid">
                 <div class="post-item">
                     <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=500&q=80" alt="Mountain view">
                     <div class="post-overlay">
@@ -184,6 +175,52 @@
                         <div class="post-stat">
                             <i class="fas fa-comment" aria-hidden="true"></i>
                             <span>39</span>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+
+            <div class="profile-content-grid" id="reels-content">
+                <div class="reels-grid">
+                    <div class="reel-card">
+                        <div class="reel-thumb">
+                            <video muted loop playsinline preload="metadata">
+                                <source src="{{ asset('videos/bg.mp4') }}" type="video/mp4">
+                            </video>
+                            <div class="post-overlay">
+                                <div class="post-stat">
+                                    <i class="fas fa-heart" aria-hidden="true"></i>
+                                    <span>12.4K</span>
+                                </div>
+                                <div class="post-stat">
+                                    <i class="fas fa-comment" aria-hidden="true"></i>
+                                    <span>864</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="reel-meta">
+                            <p>12.4K views · 1d</p>
+                        </div>
+                    </div>
+                    <div class="reel-card">
+                        <div class="reel-thumb">
+                            <video muted loop playsinline preload="metadata">
+                                <source src="{{ asset('videos/bg.mp4') }}" type="video/mp4">
+                            </video>
+                            <div class="post-overlay">
+                                <div class="post-stat">
+                                    <i class="fas fa-heart" aria-hidden="true"></i>
+                                    <span>9.1K</span>
+                                </div>
+                                <div class="post-stat">
+                                    <i class="fas fa-comment" aria-hidden="true"></i>
+                                    <span>542</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="reel-meta">
+                            <p>9.1K views · 3d</p>
                         </div>
                     </div>
                 </div>
@@ -538,6 +575,360 @@
             white-space: nowrap;
         }
 
+        /* Reels styling to match profile */
+        .profile-content-grid {
+            display: none;
+        }
+
+        .profile-content-grid.active {
+            display: block;
+        }
+
+        .reels-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 8px;
+        }
+
+        .reel-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .reel-thumb {
+            position: relative;
+            overflow: hidden;
+            aspect-ratio: 1 / 1;
+        }
+
+        .reel-thumb video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .reel-card .post-overlay {
+            opacity: 0;
+        }
+
+        .reel-card:hover .post-overlay {
+            opacity: 1;
+        }
+
+        .reel-meta {
+            padding: 12px 14px 14px;
+        }
+
+        .reel-meta p {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        /* Highlight story modal (match profile) */
+        .highlight-modal {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 120;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .highlight-modal.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .highlight-modal-content {
+            width: 920px;
+            max-width: 96%;
+            max-height: 90vh;
+            border-radius: 18px;
+            background-color: var(--light-dark);
+            border: 1px solid var(--border);
+            padding: 20px;
+            overflow: hidden;
+            position: relative;
+            z-index: 2;
+        }
+
+        .highlight-modal-overlay {
+            position: absolute;
+            inset: 0;
+            background: transparent;
+            z-index: 1;
+        }
+
+        .highlight-story-viewer {
+            display: flex;
+            gap: 20px;
+            align-items: stretch;
+            height: 100%;
+            min-height: 0;
+        }
+
+        .highlight-story-main {
+            flex: 1 1 65%;
+            background-color: #111;
+            border-radius: 18px;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            gap: 14px;
+            min-height: 0;
+        }
+
+        .highlight-story-progress {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+
+        .highlight-story-track {
+            flex: 1;
+            height: 3px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.2);
+            overflow: hidden;
+        }
+
+        .highlight-story-fill {
+            height: 100%;
+            width: 0;
+            background: #fff;
+            transition: width 0.15s linear;
+        }
+
+        .highlight-story-track.completed .highlight-story-fill {
+            width: 100%;
+        }
+
+        .highlight-story-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+
+        .highlight-story-user {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .highlight-story-user img {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            object-fit: cover;
+        }
+
+        .highlight-story-user strong {
+            font-size: 15px;
+        }
+
+        .highlight-story-user span {
+            display: block;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .highlight-story-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .highlight-icon-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            background: rgba(0, 0, 0, 0.35);
+            color: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s ease;
+        }
+
+        .highlight-icon-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .highlight-story-stage {
+            flex: 1 1 auto;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 14px;
+            overflow: hidden;
+            width: 100%;
+            aspect-ratio: 9 / 16;
+            height: clamp(360px, 60vh, 560px);
+            background: #000;
+            min-height: 0;
+        }
+
+        .highlight-story-media {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .highlight-story-media img,
+        .highlight-story-media video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .highlight-story-media video {
+            object-fit: contain;
+            background: #000;
+        }
+
+        .highlight-story-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 2;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            background: rgba(0, 0, 0, 0.35);
+            color: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s ease;
+        }
+
+        .highlight-story-nav.prev { left: 12px; }
+        .highlight-story-nav.next { right: 12px; }
+
+        .highlight-story-nav:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .highlight-story-sidebar {
+            flex: 0 0 260px;
+            background: var(--dark);
+            border-radius: 16px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            border: 1px solid var(--border);
+            height: 100%;
+            min-height: 0;
+        }
+
+        .highlight-story-sidebar h3 {
+            margin: 0;
+            font-size: 15px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .highlight-story-queue {
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding-right: 4px;
+            flex: 1 1 auto;
+        }
+
+        .highlight-story-queue::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .highlight-story-queue::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 999px;
+        }
+
+        .highlight-story-queue::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.45);
+            border-radius: 999px;
+        }
+
+        .highlight-story-queue-item {
+            background: transparent;
+            border: 1px solid transparent;
+            border-radius: 12px;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-align: left;
+            cursor: pointer;
+            color: var(--text);
+            transition: border-color 0.2s ease, background 0.2s ease;
+        }
+
+        .highlight-story-queue-item.active {
+            border-color: var(--primary);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .highlight-story-queue-thumb img {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid transparent;
+            transition: border-color 0.2s ease, filter 0.2s ease;
+        }
+
+        .highlight-story-queue-meta {
+            display: flex;
+            flex-direction: column;
+            font-size: 13px;
+        }
+
+        .highlight-story-queue-meta span:last-child {
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+
+        @media (max-width: 1100px) {
+            .profile-info {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .profile-avatar {
+                margin-bottom: 20px;
+            }
+
+            .stats {
+                justify-content: center;
+            }
+        }
+
         .profile-nav {
             border-top: 1px solid var(--border);
             display: flex;
@@ -646,23 +1037,12 @@
             margin-right: auto;
         }
 
-        @media (max-width: 1100px) {
-            .profile-info {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .profile-avatar {
-                margin-bottom: 20px;
-            }
-
-            .stats {
-                justify-content: center;
-            }
-        }
-
         @media (max-width: 768px) {
             .posts-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .reels-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
         }
@@ -675,84 +1055,85 @@
             .posts-grid {
                 grid-template-columns: 1fr;
             }
+
+            .reels-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
+@endpush
+
+@push('modals')
+    <div class="highlight-modal" id="highlightStoryModal" aria-modal="true" role="dialog">
+        <div class="highlight-modal-overlay" id="highlightStoryOverlay"></div>
+        <div class="highlight-modal-content">
+            <div class="highlight-story-viewer">
+                <div class="highlight-story-main">
+                    <div class="highlight-story-progress" id="highlightStoryProgress"></div>
+                    <div class="highlight-story-header">
+                        <div class="highlight-story-user">
+                            <img src="https://i.pravatar.cc/150?img=1" alt="Highlight avatar" id="highlightStoryAvatar">
+                            <div>
+                                <strong id="highlightStoryTitle">Travel</strong>
+                                <span id="highlightStoryTime">2d ago</span>
+                            </div>
+                        </div>
+                        <div class="highlight-story-actions">
+                            <button class="highlight-icon-btn" id="highlightStoryPause" aria-label="Pause highlight">
+                                <i class="fas fa-pause"></i>
+                            </button>
+                            <button class="highlight-icon-btn" id="highlightStoryMute" aria-label="Mute highlight">
+                                <i class="fas fa-volume-mute"></i>
+                            </button>
+                            <button class="highlight-icon-btn" id="highlightStoryClose" aria-label="Close highlight viewer">&times;</button>
+                        </div>
+                    </div>
+                    <div class="highlight-story-stage">
+                        <button class="highlight-story-nav prev" id="highlightStoryPrev" aria-label="Previous highlight">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <div class="highlight-story-media" id="highlightStoryMedia"></div>
+                        <button class="highlight-story-nav next" id="highlightStoryNext" aria-label="Next highlight">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="highlight-story-sidebar">
+                    <h3>Highlights</h3>
+                    <div class="highlight-story-queue" id="highlightStoryQueue"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 @endpush
 
 @push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const navItems = document.querySelectorAll('.profile-user-page .nav-item');
-            const postsGrid = document.querySelector('.profile-user-page .posts-grid');
-            const profileHeader = document.querySelector('.profile-user-page .profile-header');
+            const contentGrids = document.querySelectorAll('.profile-user-page .profile-content-grid');
             const followBtn = document.getElementById('followBtn');
-
-            const getTabContent = (tab) => {
-                switch (tab) {
-                    case 'reels':
-                        return {
-                            icon: 'clapperboard',
-                            title: 'No Reels Yet',
-                            text: 'When you share reels, they will appear on your profile.'
-                        };
-                    case 'saved':
-                        return {
-                            icon: 'bookmark',
-                            title: 'No Saved Posts',
-                            text: 'Save photos and videos that you want to see again.'
-                        };
-                    default:
-                        return {
-                            icon: 'table-cells',
-                            title: 'No Posts Yet',
-                            text: 'When you share photos, they will appear on your profile.'
-                        };
-                }
-            };
-
-            const renderEmptyState = (tab) => {
-                const existingEmpty = document.querySelector('.profile-user-page .empty-state');
-                if (existingEmpty) {
-                    existingEmpty.remove();
-                }
-
-                if (tab === 'posts') {
-                    postsGrid.style.display = 'grid';
-                    return;
-                }
-
-                postsGrid.style.display = 'none';
-                const content = getTabContent(tab);
-                const empty = document.createElement('div');
-                empty.className = 'empty-state';
-                empty.innerHTML = `
-                    <div class="empty-icon">
-                        <i class="fas fa-${content.icon}" aria-hidden="true"></i>
-                    </div>
-                    <h2 class="empty-title">${content.title}</h2>
-                    <p class="empty-text">${content.text}</p>
-                `;
-                profileHeader.insertAdjacentElement('afterend', empty);
-            };
 
             navItems.forEach((item) => {
                 item.addEventListener('click', (event) => {
                     event.preventDefault();
+                    const tabToActivate = item.getAttribute('data-tab');
+
                     navItems.forEach((nav) => nav.classList.remove('active'));
                     item.classList.add('active');
-                    renderEmptyState(item.dataset.tab);
+
+                    contentGrids.forEach((grid) => {
+                        if (grid.id === `${tabToActivate}-content`) {
+                            grid.classList.add('active');
+                        } else {
+                            grid.classList.remove('active');
+                        }
+                    });
                 });
             });
 
             document.querySelectorAll('.profile-user-page .post-item').forEach((post) => {
                 post.addEventListener('click', () => alert('Opening post detail view'));
-            });
-
-            document.querySelectorAll('.profile-user-page .highlight-item').forEach((highlight) => {
-                highlight.addEventListener('click', () => {
-                    const name = highlight.querySelector('.highlight-name').textContent;
-                    alert(`Viewing ${name} highlight`);
-                });
             });
 
             if (followBtn) {
@@ -762,6 +1143,425 @@
                     followBtn.style.backgroundColor = isFollowing ? 'var(--primary)' : '#333';
                 });
             }
+
+            // Highlight story viewer logic (mirrors profile)
+            const highlightData = {
+                travel: {
+                    title: 'Travel',
+                    ago: '2d ago',
+                    src: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=900&q=80",
+                    poster: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=900&q=80'
+                },
+                food: {
+                    title: 'Food',
+                    ago: '3d ago',
+                    src: "https://images.unsplash.com/photo-1565958011703-44f9829ba187?auto=format&fit=crop&w=900&q=80",
+                    poster: 'https://images.unsplash.com/photo-1565958011703-44f9829ba187?auto=format&fit=crop&w=900&q=80'
+                },
+                fitness: {
+                    title: 'Fitness',
+                    ago: '4d ago',
+                    src: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=900&q=80",
+                    poster: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=900&q=80'
+                },
+                beach: {
+                    title: 'Beach',
+                    ago: '5d ago',
+                    src: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=900&q=80",
+                    poster: 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=900&q=80'
+                },
+                nature: {
+                    title: 'Nature',
+                    ago: '1w ago',
+                    src: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=900&q=80",
+                    poster: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=900&q=80'
+                }
+            };
+
+            const highlightStoryModal = document.getElementById('highlightStoryModal');
+            const highlightStoryOverlay = document.getElementById('highlightStoryOverlay');
+            const highlightStoryMedia = document.getElementById('highlightStoryMedia');
+            const highlightStoryProgress = document.getElementById('highlightStoryProgress');
+            const highlightStoryQueue = document.getElementById('highlightStoryQueue');
+            const highlightStoryAvatar = document.getElementById('highlightStoryAvatar');
+            const highlightStoryTitle = document.getElementById('highlightStoryTitle');
+            const highlightStoryTime = document.getElementById('highlightStoryTime');
+            const highlightStoryPause = document.getElementById('highlightStoryPause');
+            const highlightStoryMute = document.getElementById('highlightStoryMute');
+            const highlightStoryClose = document.getElementById('highlightStoryClose');
+            const highlightStoryPrev = document.getElementById('highlightStoryPrev');
+            const highlightStoryNext = document.getElementById('highlightStoryNext');
+
+            const highlightItems = document.querySelectorAll('.profile-user-page .highlight-item');
+            const highlightOrder = Array.from(highlightItems).map(item => item.getAttribute('data-highlight-id'));
+
+            const resolveAvatar = (id) => {
+                const circleImg = document.querySelector(`.highlight-item[data-highlight-id="${id}"] img`);
+                if (circleImg?.src) return circleImg.src;
+                return 'https://i.pravatar.cc/150?img=1';
+            };
+
+            let highlightSequence = highlightOrder.map((id) => {
+                const data = highlightData[id] || {};
+                return {
+                    id,
+                    displayName: data.title || 'Highlight',
+                    avatar: resolveAvatar(id),
+                    lastActive: data.ago || 'Just now',
+                    stories: [
+                        {
+                            type: 'video',
+                            src: data.src || "{{ asset('videos/bg.mp4') }}",
+                            duration: 7,
+                            postedAgo: data.ago || 'Just now',
+                            poster: data.poster
+                        }
+                    ]
+                };
+            });
+
+            let activeHighlightIndex = 0;
+            let activeStoryIndex = 0;
+            let activeProgressFill = null;
+            let highlightInterval = null;
+            let highlightProgressTimer = null;
+            let highlightProgressStart = 0;
+            let highlightProgressDuration = 0;
+            let activeHighlightVideo = null;
+            let highlightPaused = false;
+            let highlightMuted = true;
+
+            const getActiveHighlight = () => highlightSequence[activeHighlightIndex];
+            const getActiveStory = () => getActiveHighlight()?.stories[activeStoryIndex];
+
+            const stopHighlightPlayback = () => {
+                if (highlightInterval) {
+                    clearInterval(highlightInterval);
+                    highlightInterval = null;
+                }
+                if (highlightProgressTimer) {
+                    cancelAnimationFrame(highlightProgressTimer);
+                    highlightProgressTimer = null;
+                }
+                if (activeHighlightVideo) {
+                    activeHighlightVideo.pause();
+                    activeHighlightVideo.currentTime = 0;
+                    activeHighlightVideo = null;
+                }
+            };
+
+            const renderProgressBars = (highlight) => {
+                if (!highlightStoryProgress) return;
+                highlightStoryProgress.innerHTML = '';
+                activeProgressFill = null;
+                (highlight.stories || []).forEach((story, index) => {
+                    const track = document.createElement('div');
+                    track.className = 'highlight-story-track';
+                    if (index < activeStoryIndex) {
+                        track.classList.add('completed');
+                    }
+                    const fill = document.createElement('div');
+                    fill.className = 'highlight-story-fill';
+                    if (index < activeStoryIndex) {
+                        fill.style.width = '100%';
+                    }
+                    track.appendChild(fill);
+                    highlightStoryProgress.appendChild(track);
+                    if (index === activeStoryIndex) {
+                        activeProgressFill = fill;
+                    }
+                });
+            };
+
+            const startImageTimer = (durationSeconds) => {
+                const seconds = durationSeconds && durationSeconds > 0 ? durationSeconds : 5;
+                let elapsed = 0;
+                const total = seconds * 1000;
+                if (activeProgressFill) {
+                    activeProgressFill.style.width = '0%';
+                }
+                highlightInterval = setInterval(() => {
+                    if (highlightPaused) return;
+                    elapsed += 50;
+                    const ratio = Math.min(elapsed / total, 1);
+                    if (activeProgressFill) {
+                        activeProgressFill.style.width = `${ratio * 100}%`;
+                    }
+                    if (ratio >= 1) {
+                        clearInterval(highlightInterval);
+                        highlightInterval = null;
+                        nextHighlightStory();
+                    }
+                }, 50);
+            };
+
+            const startProgressTimer = (durationMs) => {
+                highlightProgressDuration = durationMs;
+                highlightProgressStart = performance.now();
+                const tick = (now) => {
+                    if (highlightPaused) {
+                        highlightProgressTimer = requestAnimationFrame(tick);
+                        return;
+                    }
+                    const elapsed = now - highlightProgressStart;
+                    const ratio = Math.min(elapsed / highlightProgressDuration, 1);
+                    if (activeProgressFill) {
+                        activeProgressFill.style.width = `${ratio * 100}%`;
+                    }
+                    if (ratio >= 1) {
+                        nextHighlightStory();
+                    } else {
+                        highlightProgressTimer = requestAnimationFrame(tick);
+                    }
+                };
+                highlightProgressTimer = requestAnimationFrame(tick);
+            };
+
+            const syncMuteState = () => {
+                if (activeHighlightVideo) {
+                    activeHighlightVideo.muted = highlightMuted;
+                    activeHighlightVideo.volume = highlightMuted ? 0 : 1;
+                }
+                if (highlightStoryMute) {
+                    const icon = highlightStoryMute.querySelector('i');
+                    if (icon) {
+                        icon.className = `fas fa-volume-${highlightMuted ? 'mute' : 'up'}`;
+                    }
+                }
+            };
+
+            const updatePauseButton = () => {
+                if (!highlightStoryPause) return;
+                const icon = highlightStoryPause.querySelector('i');
+                if (icon) {
+                    icon.className = `fas fa-${highlightPaused ? 'play' : 'pause'}`;
+                }
+            };
+
+            const renderQueue = () => {
+                if (!highlightStoryQueue) return;
+                highlightStoryQueue.innerHTML = '';
+                highlightSequence.forEach((entry, index) => {
+                    const item = document.createElement('button');
+                    item.type = 'button';
+                    item.className = `highlight-story-queue-item${index === activeHighlightIndex ? ' active' : ''}`;
+                    item.innerHTML = `
+                        <div class="highlight-story-queue-thumb">
+                            <img src="${entry.avatar}" alt="${entry.displayName}">
+                        </div>
+                        <div class="highlight-story-queue-meta">
+                            <span>${entry.displayName}</span>
+                            <span>${entry.lastActive}</span>
+                        </div>
+                    `;
+                    item.addEventListener('click', () => {
+                        goToHighlight(index, 0);
+                    });
+                    highlightStoryQueue.appendChild(item);
+                });
+            };
+
+            const renderHighlightStory = () => {
+                const highlight = getActiveHighlight();
+                const story = getActiveStory();
+                if (!highlight || !story || !highlightStoryMedia) return;
+
+                stopHighlightPlayback();
+                highlightPaused = false;
+                updatePauseButton();
+
+                if (highlightStoryTitle) highlightStoryTitle.textContent = highlight.displayName;
+                if (highlightStoryAvatar) {
+                    highlightStoryAvatar.src = highlight.avatar;
+                    highlightStoryAvatar.alt = `${highlight.displayName} avatar`;
+                }
+                if (highlightStoryTime) highlightStoryTime.textContent = story.postedAgo || highlight.lastActive;
+
+                renderProgressBars(highlight);
+                renderQueue();
+
+                highlightStoryMedia.innerHTML = '';
+
+                if (story.type === 'video') {
+                    const video = document.createElement('video');
+                    video.src = story.src;
+                    if (story.poster) video.poster = story.poster;
+                    video.autoplay = true;
+                    video.muted = highlightMuted;
+                    video.playsInline = true;
+                    video.controls = false;
+                    video.loop = false;
+                    highlightStoryMedia.appendChild(video);
+                    activeHighlightVideo = video;
+
+                    const updateVideoProgress = () => {
+                        if (!activeProgressFill || !video.duration || Number.isNaN(video.duration)) return;
+                        const ratio = Math.min(video.currentTime / video.duration, 1);
+                        activeProgressFill.style.width = `${ratio * 100}%`;
+                    };
+
+                    video.addEventListener('timeupdate', updateVideoProgress);
+                    video.addEventListener('ended', () => nextHighlightStory());
+                    const beginTimedProgress = () => {
+                        const durationMs = video.duration && !Number.isNaN(video.duration)
+                            ? video.duration * 1000
+                            : 7000;
+                        startProgressTimer(durationMs);
+                    };
+                    if (video.readyState >= 1 && video.duration) {
+                        updateVideoProgress();
+                        beginTimedProgress();
+                    } else {
+                        video.addEventListener('loadedmetadata', () => {
+                            updateVideoProgress();
+                            beginTimedProgress();
+                        }, { once: true });
+                    }
+                    syncMuteState();
+                } else {
+                    const img = document.createElement('img');
+                    img.src = story.src;
+                    img.alt = story.caption || highlight.displayName;
+                    highlightStoryMedia.appendChild(img);
+                    startProgressTimer((story.duration && story.duration > 0 ? story.duration : 5) * 1000);
+                }
+            };
+
+            const goToHighlight = (index, storyIndex = 0) => {
+                const total = highlightSequence.length;
+                if (!total) return;
+                activeHighlightIndex = ((index % total) + total) % total;
+                const target = getActiveHighlight();
+                activeStoryIndex = Math.min(Math.max(storyIndex, 0), (target?.stories.length || 1) - 1);
+                renderHighlightStory();
+            };
+
+            const nextHighlightStory = () => {
+                const highlight = getActiveHighlight();
+                if (!highlight) return;
+                if (activeStoryIndex < (highlight.stories.length - 1)) {
+                    activeStoryIndex += 1;
+                    renderHighlightStory();
+                    return;
+                }
+                goToHighlight(activeHighlightIndex + 1, 0);
+            };
+
+            const prevHighlightStory = () => {
+                if (!highlightSequence.length) return;
+                if (activeStoryIndex > 0) {
+                    activeStoryIndex -= 1;
+                    renderHighlightStory();
+                    return;
+                }
+                const total = highlightSequence.length;
+                const targetIndex = ((activeHighlightIndex - 1) % total + total) % total;
+                const targetHighlight = highlightSequence[targetIndex];
+                const lastStoryIndex = Math.max((targetHighlight?.stories.length || 1) - 1, 0);
+                goToHighlight(targetIndex, lastStoryIndex);
+            };
+
+            const closeHighlightModal = () => {
+                stopHighlightPlayback();
+                if (highlightStoryModal) {
+                    highlightStoryModal.classList.remove('active');
+                }
+            };
+
+            const openHighlightModal = (id) => {
+                const targetIndex = highlightSequence.findIndex(entry => entry.id === id);
+                goToHighlight(targetIndex === -1 ? 0 : targetIndex, 0);
+                if (highlightStoryModal) {
+                    highlightStoryModal.classList.add('active');
+                }
+            };
+
+            if (highlightStoryOverlay) {
+                highlightStoryOverlay.addEventListener('click', closeHighlightModal);
+            }
+
+            if (highlightStoryClose) {
+                highlightStoryClose.addEventListener('click', closeHighlightModal);
+            }
+
+            if (highlightStoryPrev) {
+                highlightStoryPrev.addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    prevHighlightStory();
+                });
+            }
+
+            if (highlightStoryNext) {
+                highlightStoryNext.addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    nextHighlightStory();
+                });
+            }
+
+            if (highlightStoryMedia) {
+                highlightStoryMedia.addEventListener('click', (event) => {
+                    const bounds = highlightStoryMedia.getBoundingClientRect();
+                    const clickX = event.clientX - bounds.left;
+                    if (clickX < bounds.width / 2) {
+                        prevHighlightStory();
+                    } else {
+                        nextHighlightStory();
+                    }
+                });
+            }
+
+            if (highlightStoryPause) {
+                highlightStoryPause.addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    highlightPaused = !highlightPaused;
+                    updatePauseButton();
+                    if (activeHighlightVideo) {
+                        if (highlightPaused) {
+                            activeHighlightVideo.pause();
+                        } else {
+                            activeHighlightVideo.play().catch(() => {});
+                        }
+                    }
+                });
+            }
+
+            if (highlightStoryMute) {
+                highlightStoryMute.addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    highlightMuted = !highlightMuted;
+                    syncMuteState();
+                });
+            }
+
+            highlightItems.forEach((highlight) => {
+                highlight.addEventListener('click', () => {
+                    const id = highlight.getAttribute('data-highlight-id');
+                    openHighlightModal(id);
+                });
+            });
+
+            if (highlightSequence.length) {
+                goToHighlight(0, 0);
+            }
+
+            // Hover-to-play for reel videos (match profile)
+            const reelVideos = document.querySelectorAll('.profile-user-page .reel-thumb video');
+            reelVideos.forEach(video => {
+                const card = video.closest('.reel-card');
+                if (!card) return;
+
+                video.pause();
+                video.currentTime = 0;
+
+                card.addEventListener('mouseenter', () => {
+                    video.play().catch(() => {});
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    video.pause();
+                    video.currentTime = 0;
+                });
+            });
         });
     </script>
 @endpush
