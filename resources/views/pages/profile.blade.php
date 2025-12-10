@@ -57,30 +57,72 @@
                     </button>
                 </div>
                 <div class="highlights-container">
-                    <div class="highlight-item">
+                    <div class="highlight-item" data-highlight-id="city-trips">
                         <div class="highlight-avatar">
                             <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=200&q=80" alt="City trips">
                         </div>
                         <span class="highlight-name">City Trips</span>
                     </div>
-                    <div class="highlight-item">
+                    <div class="highlight-item" data-highlight-id="studio">
                         <div class="highlight-avatar">
                             <img src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=200&q=80" alt="Studio">
                         </div>
                         <span class="highlight-name">Studio</span>
                     </div>
-                    <div class="highlight-item">
+                    <div class="highlight-item" data-highlight-id="moodboards">
                         <div class="highlight-avatar">
                             <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=200&q=80" alt="Moodboards">
                         </div>
                         <span class="highlight-name">Moodboards</span>
                     </div>
-                    <div class="highlight-item">
+                    <div class="highlight-item" data-highlight-id="launches">
                         <div class="highlight-avatar">
                             <img src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=200&q=80" alt="Launches">
                         </div>
                         <span class="highlight-name">Launches</span>
                     </div>
+                </div>
+            </div>
+
+            <div class="highlights-watch" id="highlightsWatch">
+                <div class="highlight-player">
+                    <div class="highlight-progress" id="highlightProgress"></div>
+                    <button class="highlight-close" aria-label="Close highlights" id="highlightClose">&times;</button>
+                    <button class="highlight-skip prev" aria-label="Previous highlight" id="highlightPrev"></button>
+                    <button class="highlight-skip next" aria-label="Next highlight" id="highlightNext"></button>
+                    <video id="highlightVideo" muted playsinline preload="metadata">
+                        <source src="{{ asset('videos/bg.mp4') }}" type="video/mp4">
+                    </video>
+                    <div class="highlight-overlay">
+                        <div>
+                            <h3 id="highlightTitle">City Trips</h3>
+                            <p id="highlightDesc">City lights, coffee stops, and late-night edits.</p>
+                            <div class="highlight-meta-row">
+                                <span id="highlightViews">32.4K views</span>
+                                <span aria-hidden="true">·</span>
+                                <span id="highlightAgo">2d ago</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-secondary" id="highlightReplay">Replay</button>
+                    </div>
+                </div>
+                <div class="highlight-thumbs" id="highlightThumbs">
+                    <button class="thumb" data-highlight-id="city-trips">
+                        <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=200&q=80" alt="City Trips thumbnail">
+                        <span>City Trips</span>
+                    </button>
+                    <button class="thumb" data-highlight-id="studio">
+                        <img src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=200&q=80" alt="Studio thumbnail">
+                        <span>Studio</span>
+                    </button>
+                    <button class="thumb" data-highlight-id="moodboards">
+                        <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=200&q=80" alt="Moodboards thumbnail">
+                        <span>Moodboards</span>
+                    </button>
+                    <button class="thumb" data-highlight-id="launches">
+                        <img src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=200&q=80" alt="Launches thumbnail">
+                        <span>Launches</span>
+                    </button>
                 </div>
             </div>
         </section>
@@ -563,6 +605,501 @@
             overflow-x: auto;
         }
 
+        .highlights-watch {
+            margin-top: 20px;
+            background: radial-gradient(circle at 20% 20%, rgba(9, 90, 162, 0.15), transparent 40%),
+                        radial-gradient(circle at 80% 10%, rgba(0, 242, 254, 0.12), transparent 35%),
+                        rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 16px;
+            display: none;
+            grid-template-columns: 1.4fr 0.9fr;
+            gap: 16px;
+            align-items: stretch;
+        }
+
+        .highlights-watch.active {
+            display: grid;
+        }
+
+        .highlight-player {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            background: #000;
+            min-height: 260px;
+        }
+
+        .highlight-progress {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            right: 12px;
+            display: flex;
+            gap: 6px;
+            z-index: 3;
+        }
+
+        .highlight-progress .bar {
+            flex: 1;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.25);
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .highlight-progress .fill {
+            height: 100%;
+            width: 0%;
+            background: #fff;
+            transition: width 0.1s linear;
+        }
+
+        .highlight-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            border: none;
+            background: rgba(0, 0, 0, 0.55);
+            color: #fff;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 3;
+        }
+
+        .highlight-skip {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 50%;
+            background: transparent;
+            border: none;
+            z-index: 2;
+            cursor: pointer;
+        }
+
+        .highlight-skip.prev { left: 0; }
+        .highlight-skip.next { right: 0; }
+
+        .highlight-skip:focus-visible { outline: 2px solid var(--primary); }
+
+        .highlight-player video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .highlight-overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            padding: 20px;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.05));
+            color: #fff;
+            gap: 12px;
+        }
+
+        .highlight-overlay h3 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .highlight-overlay p {
+            margin: 6px 0;
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        .highlight-meta-row {
+            display: flex;
+            gap: 8px;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .highlight-thumbs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 10px;
+            align-self: stretch;
+        }
+
+        .thumb {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            cursor: pointer;
+            color: var(--text);
+            text-align: left;
+            transition: border-color 0.2s, transform 0.2s;
+        }
+
+        .thumb:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .thumb img {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .thumb span {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        /* Highlight story modal (mirrors home stories) */
+        .highlight-modal {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 120;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .highlight-modal.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .highlight-modal-content {
+            width: 920px;
+            max-width: 96%;
+            max-height: 90vh;
+            border-radius: 18px;
+            background-color: var(--light-dark);
+            border: 1px solid var(--border);
+            padding: 20px;
+            overflow: hidden;
+            position: relative;
+            z-index: 2;
+        }
+
+        .highlight-modal-overlay {
+            position: absolute;
+            inset: 0;
+            background: transparent;
+            z-index: 1;
+        }
+
+        .highlight-story-viewer {
+            display: flex;
+            gap: 20px;
+            align-items: stretch;
+            height: 100%;
+            min-height: 0;
+        }
+
+        .highlight-story-main {
+            flex: 1 1 65%;
+            background-color: #111;
+            border-radius: 18px;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            gap: 14px;
+            min-height: 0;
+        }
+
+        .highlight-story-progress {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+
+        .highlight-story-track {
+            flex: 1;
+            height: 3px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.2);
+            overflow: hidden;
+        }
+
+        .highlight-story-fill {
+            height: 100%;
+            width: 0;
+            background: #fff;
+            transition: width 0.15s linear;
+        }
+
+        .highlight-story-track.completed .highlight-story-fill {
+            width: 100%;
+        }
+
+        .highlight-story-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+
+        .highlight-story-user {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .highlight-story-user img {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            object-fit: cover;
+        }
+
+        .highlight-story-user strong {
+            font-size: 15px;
+        }
+
+        .highlight-story-user span {
+            display: block;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .highlight-story-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .highlight-icon-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            background: rgba(0, 0, 0, 0.35);
+            color: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s ease;
+        }
+
+        .highlight-icon-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .highlight-story-stage {
+            flex: 1 1 auto;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 14px;
+            overflow: hidden;
+            width: 100%;
+            aspect-ratio: 9 / 16;
+            height: clamp(360px, 60vh, 560px);
+            background: #000;
+            min-height: 0;
+        }
+
+        .highlight-story-media {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .highlight-story-media img,
+        .highlight-story-media video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .highlight-story-media video {
+            object-fit: contain;
+            background: #000;
+        }
+
+        .highlight-story-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 2;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            background: rgba(0, 0, 0, 0.35);
+            color: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s ease;
+        }
+
+        .highlight-story-nav.prev { left: 12px; }
+        .highlight-story-nav.next { right: 12px; }
+
+        .highlight-story-nav:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .highlight-story-sidebar {
+            flex: 0 0 260px;
+            background: var(--dark);
+            border-radius: 16px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            border: 1px solid var(--border);
+            height: 100%;
+            min-height: 0;
+        }
+
+        .highlight-story-sidebar h3 {
+            margin: 0;
+            font-size: 15px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .highlight-story-queue {
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding-right: 4px;
+            flex: 1 1 auto;
+        }
+
+        .highlight-story-queue::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .highlight-story-queue::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 999px;
+        }
+
+        .highlight-story-queue::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.45);
+            border-radius: 999px;
+        }
+
+        .highlight-story-queue-item {
+            background: transparent;
+            border: 1px solid transparent;
+            border-radius: 12px;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-align: left;
+            cursor: pointer;
+            color: var(--text);
+            transition: border-color 0.2s ease, background 0.2s ease;
+        }
+
+        .highlight-story-queue-item.active {
+            border-color: var(--primary);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .highlight-story-queue-thumb img {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid transparent;
+            transition: border-color 0.2s ease, filter 0.2s ease;
+        }
+
+        .highlight-story-queue-meta {
+            display: flex;
+            flex-direction: column;
+            font-size: 13px;
+        }
+
+        .highlight-story-queue-meta span:last-child {
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+
+        @media (max-width: 992px) {
+            .highlight-story-viewer {
+                flex-direction: column;
+                height: auto;
+            }
+
+            .highlight-story-sidebar {
+                flex: 0 0 auto;
+                width: 100%;
+                max-height: 220px;
+                height: auto;
+            }
+
+            .highlight-story-queue {
+                max-height: 160px;
+            }
+
+            .highlight-story-stage {
+                height: clamp(360px, 65vh, 600px);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .highlight-modal-content {
+                padding: 15px;
+            }
+
+            .highlight-story-main {
+                padding: 12px;
+            }
+
+            .highlight-story-sidebar {
+                max-height: 250px;
+            }
+
+            .highlight-story-stage {
+                height: clamp(320px, 60vh, 520px);
+            }
+        }
+
+        @media (max-width: 576px) {
+            .highlight-modal-content {
+                padding: 10px;
+            }
+
+            .highlight-story-sidebar {
+                max-height: 200px;
+                padding: 10px;
+            }
+
+            .highlight-story-stage {
+                height: clamp(260px, 55vh, 420px);
+            }
+        }
+
         .highlight-item {
             display: flex;
             flex-direction: column;
@@ -954,6 +1491,48 @@ Obsessed with bold color palettes and cozy city corners.</textarea>
             </div>
         </div>
     </div>
+
+    <div class="highlight-modal" id="highlightStoryModal" aria-modal="true" role="dialog">
+        <div class="highlight-modal-overlay" id="highlightStoryOverlay"></div>
+        <div class="highlight-modal-content">
+            <div class="highlight-story-viewer">
+                <div class="highlight-story-main">
+                    <div class="highlight-story-progress" id="highlightStoryProgress"></div>
+                    <div class="highlight-story-header">
+                        <div class="highlight-story-user">
+                            <img src="https://images.unsplash.com/photo-1544723795-3fb6469f5b39?auto=format&fit=crop&w=200&q=80" alt="Highlight avatar" id="highlightStoryAvatar">
+                            <div>
+                                <strong id="highlightStoryTitle">City Trips</strong>
+                                <span id="highlightStoryTime">2d ago</span>
+                            </div>
+                        </div>
+                        <div class="highlight-story-actions">
+                            <button class="highlight-icon-btn" id="highlightStoryPause" aria-label="Pause highlight">
+                                <i class="fas fa-pause"></i>
+                            </button>
+                            <button class="highlight-icon-btn" id="highlightStoryMute" aria-label="Mute highlight">
+                                <i class="fas fa-volume-mute"></i>
+                            </button>
+                            <button class="highlight-icon-btn" id="highlightStoryClose" aria-label="Close highlight viewer">&times;</button>
+                        </div>
+                    </div>
+                    <div class="highlight-story-stage">
+                        <button class="highlight-story-nav prev" id="highlightStoryPrev" aria-label="Previous highlight">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <div class="highlight-story-media" id="highlightStoryMedia"></div>
+                        <button class="highlight-story-nav next" id="highlightStoryNext" aria-label="Next highlight">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="highlight-story-sidebar">
+                    <h3>Highlights</h3>
+                    <div class="highlight-story-queue" id="highlightStoryQueue"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 @endpush
 
 @push('scripts')
@@ -1054,12 +1633,378 @@ Obsessed with bold color palettes and cozy city corners.</textarea>
                 post.addEventListener('click', () => alert('Opening post detail view'));
             });
 
+            // Highlight story viewer (match home stories modal behavior)
+            const highlightData = {
+                'city-trips': {
+                    title: 'City Trips',
+                    desc: 'City lights, coffee stops, and late-night edits.',
+                    views: '32.4K views',
+                    ago: '2d ago',
+                    src: "{{ asset('videos/bg.mp4') }}",
+                    poster: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=900&q=80'
+                },
+                'studio': {
+                    title: 'Studio',
+                    desc: 'Lighting tests, color checks, and moodboards.',
+                    views: '19.8K views',
+                    ago: '3d ago',
+                    src: "{{ asset('videos/bg.mp4') }}",
+                    poster: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=900&q=80'
+                },
+                'moodboards': {
+                    title: 'Moodboards',
+                    desc: 'Texture pulls and palette drafts.',
+                    views: '11.2K views',
+                    ago: '5d ago',
+                    src: "{{ asset('videos/bg.mp4') }}",
+                    poster: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80'
+                },
+                'launches': {
+                    title: 'Launches',
+                    desc: 'Sneak peeks before they go live.',
+                    views: '27.6K views',
+                    ago: '1w ago',
+                    src: "{{ asset('videos/bg.mp4') }}",
+                    poster: 'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=900&q=80'
+                }
+            };
+
+            const highlightStoryModal = document.getElementById('highlightStoryModal');
+            const highlightStoryOverlay = document.getElementById('highlightStoryOverlay');
+            const highlightStoryMedia = document.getElementById('highlightStoryMedia');
+            const highlightStoryProgress = document.getElementById('highlightStoryProgress');
+            const highlightStoryQueue = document.getElementById('highlightStoryQueue');
+            const highlightStoryAvatar = document.getElementById('highlightStoryAvatar');
+            const highlightStoryTitle = document.getElementById('highlightStoryTitle');
+            const highlightStoryTime = document.getElementById('highlightStoryTime');
+            const highlightStoryPause = document.getElementById('highlightStoryPause');
+            const highlightStoryMute = document.getElementById('highlightStoryMute');
+            const highlightStoryClose = document.getElementById('highlightStoryClose');
+            const highlightStoryPrev = document.getElementById('highlightStoryPrev');
+            const highlightStoryNext = document.getElementById('highlightStoryNext');
+
+            const highlightOrder = Array.from(document.querySelectorAll('.highlight-item')).map(item => item.getAttribute('data-highlight-id'));
+            const thumbFallbackOrder = Array.from(document.querySelectorAll('#highlightThumbs .thumb')).map(btn => btn.getAttribute('data-highlight-id'));
+            const resolvedOrder = highlightOrder.length ? highlightOrder : thumbFallbackOrder;
+
+            const resolveAvatar = (id) => {
+                const circleImg = document.querySelector(`.highlight-item[data-highlight-id="${id}"] img`);
+                if (circleImg?.src) return circleImg.src;
+                const thumbImg = document.querySelector(`#highlightThumbs .thumb[data-highlight-id="${id}"] img`);
+                if (thumbImg?.src) return thumbImg.src;
+                return 'https://images.unsplash.com/photo-1544723795-3fb6469f5b39?auto=format&fit=crop&w=200&q=80';
+            };
+
+            let highlightSequence = resolvedOrder.map((id) => {
+                const data = highlightData[id] || {};
+                return {
+                    id,
+                    displayName: data.title || 'Highlight',
+                    avatar: resolveAvatar(id),
+                    lastActive: data.ago || 'Just now',
+                    stories: [
+                        {
+                            type: 'video',
+                            src: data.src || "{{ asset('videos/bg.mp4') }}",
+                            duration: 7,
+                            postedAgo: data.ago || 'Just now',
+                            poster: data.poster
+                        }
+                    ]
+                };
+            });
+
+            let activeHighlightIndex = 0;
+            let activeStoryIndex = 0;
+            let activeProgressFill = null;
+            let highlightInterval = null;
+            let activeHighlightVideo = null;
+            let highlightPaused = false;
+            let highlightMuted = true;
+
+            const getActiveHighlight = () => highlightSequence[activeHighlightIndex];
+            const getActiveStory = () => getActiveHighlight()?.stories[activeStoryIndex];
+
+            const stopHighlightPlayback = () => {
+                if (highlightInterval) {
+                    clearInterval(highlightInterval);
+                    highlightInterval = null;
+                }
+                if (activeHighlightVideo) {
+                    activeHighlightVideo.pause();
+                    activeHighlightVideo.currentTime = 0;
+                    activeHighlightVideo = null;
+                }
+            };
+
+            const renderProgressBars = (highlight) => {
+                if (!highlightStoryProgress) return;
+                highlightStoryProgress.innerHTML = '';
+                activeProgressFill = null;
+                (highlight.stories || []).forEach((story, index) => {
+                    const track = document.createElement('div');
+                    track.className = 'highlight-story-track';
+                    if (index < activeStoryIndex) {
+                        track.classList.add('completed');
+                    }
+                    const fill = document.createElement('div');
+                    fill.className = 'highlight-story-fill';
+                    if (index < activeStoryIndex) {
+                        fill.style.width = '100%';
+                    }
+                    track.appendChild(fill);
+                    highlightStoryProgress.appendChild(track);
+                    if (index === activeStoryIndex) {
+                        activeProgressFill = fill;
+                    }
+                });
+            };
+
+            const startImageTimer = (durationSeconds) => {
+                const seconds = durationSeconds && durationSeconds > 0 ? durationSeconds : 5;
+                let elapsed = 0;
+                const total = seconds * 1000;
+                if (activeProgressFill) {
+                    activeProgressFill.style.width = '0%';
+                }
+                highlightInterval = setInterval(() => {
+                    if (highlightPaused) return;
+                    elapsed += 50;
+                    const ratio = Math.min(elapsed / total, 1);
+                    if (activeProgressFill) {
+                        activeProgressFill.style.width = `${ratio * 100}%`;
+                    }
+                    if (ratio >= 1) {
+                        clearInterval(highlightInterval);
+                        highlightInterval = null;
+                        nextHighlightStory();
+                    }
+                }, 50);
+            };
+
+            const syncMuteState = () => {
+                if (activeHighlightVideo) {
+                    activeHighlightVideo.muted = highlightMuted;
+                    activeHighlightVideo.volume = highlightMuted ? 0 : 1;
+                }
+                if (highlightStoryMute) {
+                    const icon = highlightStoryMute.querySelector('i');
+                    if (icon) {
+                        icon.className = `fas fa-volume-${highlightMuted ? 'mute' : 'up'}`;
+                    }
+                }
+            };
+
+            const updatePauseButton = () => {
+                if (!highlightStoryPause) return;
+                const icon = highlightStoryPause.querySelector('i');
+                if (icon) {
+                    icon.className = `fas fa-${highlightPaused ? 'play' : 'pause'}`;
+                }
+            };
+
+            const renderQueue = () => {
+                if (!highlightStoryQueue) return;
+                highlightStoryQueue.innerHTML = '';
+                highlightSequence.forEach((entry, index) => {
+                    const item = document.createElement('button');
+                    item.type = 'button';
+                    item.className = `highlight-story-queue-item${index === activeHighlightIndex ? ' active' : ''}`;
+                    item.innerHTML = `
+                        <div class="highlight-story-queue-thumb">
+                            <img src="${entry.avatar}" alt="${entry.displayName}">
+                        </div>
+                        <div class="highlight-story-queue-meta">
+                            <span>${entry.displayName}</span>
+                            <span>${entry.lastActive}</span>
+                        </div>
+                    `;
+                    item.addEventListener('click', () => {
+                        goToHighlight(index, 0);
+                    });
+                    highlightStoryQueue.appendChild(item);
+                });
+            };
+
+            const renderHighlightStory = () => {
+                const highlight = getActiveHighlight();
+                const story = getActiveStory();
+                if (!highlight || !story || !highlightStoryMedia) return;
+
+                stopHighlightPlayback();
+                highlightPaused = false;
+                updatePauseButton();
+
+                if (highlightStoryTitle) highlightStoryTitle.textContent = highlight.displayName;
+                if (highlightStoryAvatar) {
+                    highlightStoryAvatar.src = highlight.avatar;
+                    highlightStoryAvatar.alt = `${highlight.displayName} avatar`;
+                }
+                if (highlightStoryTime) highlightStoryTime.textContent = story.postedAgo || highlight.lastActive;
+
+                renderProgressBars(highlight);
+                renderQueue();
+
+                highlightStoryMedia.innerHTML = '';
+
+                if (story.type === 'video') {
+                    const video = document.createElement('video');
+                    video.src = story.src;
+                    if (story.poster) video.poster = story.poster;
+                    video.autoplay = true;
+                    video.muted = highlightMuted;
+                    video.playsInline = true;
+                    video.controls = false;
+                    video.loop = false;
+                    highlightStoryMedia.appendChild(video);
+                    activeHighlightVideo = video;
+
+                    const updateVideoProgress = () => {
+                        if (!activeProgressFill || !video.duration || Number.isNaN(video.duration)) return;
+                        const ratio = Math.min(video.currentTime / video.duration, 1);
+                        activeProgressFill.style.width = `${ratio * 100}%`;
+                    };
+
+                    video.addEventListener('timeupdate', updateVideoProgress);
+                    video.addEventListener('ended', () => nextHighlightStory());
+                    if (video.readyState >= 1) {
+                        updateVideoProgress();
+                    } else {
+                        video.addEventListener('loadedmetadata', updateVideoProgress, { once: true });
+                    }
+                    syncMuteState();
+                } else {
+                    const img = document.createElement('img');
+                    img.src = story.src;
+                    img.alt = story.caption || highlight.displayName;
+                    highlightStoryMedia.appendChild(img);
+                    startImageTimer(story.duration);
+                }
+            };
+
+            const goToHighlight = (index, storyIndex = 0) => {
+                const total = highlightSequence.length;
+                if (!total) return;
+                activeHighlightIndex = ((index % total) + total) % total;
+                const target = getActiveHighlight();
+                activeStoryIndex = Math.min(Math.max(storyIndex, 0), (target?.stories.length || 1) - 1);
+                renderHighlightStory();
+            };
+
+            const nextHighlightStory = () => {
+                const highlight = getActiveHighlight();
+                if (!highlight) return;
+                if (activeStoryIndex < (highlight.stories.length - 1)) {
+                    activeStoryIndex += 1;
+                    renderHighlightStory();
+                    return;
+                }
+                goToHighlight(activeHighlightIndex + 1, 0);
+            };
+
+            const prevHighlightStory = () => {
+                if (!highlightSequence.length) return;
+                if (activeStoryIndex > 0) {
+                    activeStoryIndex -= 1;
+                    renderHighlightStory();
+                    return;
+                }
+                const total = highlightSequence.length;
+                const targetIndex = ((activeHighlightIndex - 1) % total + total) % total;
+                const targetHighlight = highlightSequence[targetIndex];
+                const lastStoryIndex = Math.max((targetHighlight?.stories.length || 1) - 1, 0);
+                goToHighlight(targetIndex, lastStoryIndex);
+            };
+
+            const closeHighlightModal = () => {
+                stopHighlightPlayback();
+                if (highlightStoryModal) {
+                    highlightStoryModal.classList.remove('active');
+                }
+            };
+
+            const openHighlightModal = (id) => {
+                const targetIndex = highlightSequence.findIndex(entry => entry.id === id);
+                goToHighlight(targetIndex === -1 ? 0 : targetIndex, 0);
+                if (highlightStoryModal) {
+                    highlightStoryModal.classList.add('active');
+                }
+            };
+
+            if (highlightStoryOverlay) {
+                highlightStoryOverlay.addEventListener('click', closeHighlightModal);
+            }
+
+            if (highlightStoryClose) {
+                highlightStoryClose.addEventListener('click', closeHighlightModal);
+            }
+
+            if (highlightStoryPrev) {
+                highlightStoryPrev.addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    prevHighlightStory();
+                });
+            }
+
+            if (highlightStoryNext) {
+                highlightStoryNext.addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    nextHighlightStory();
+                });
+            }
+
+            if (highlightStoryMedia) {
+                highlightStoryMedia.addEventListener('click', (event) => {
+                    const bounds = highlightStoryMedia.getBoundingClientRect();
+                    const clickX = event.clientX - bounds.left;
+                    if (clickX < bounds.width / 2) {
+                        prevHighlightStory();
+                    } else {
+                        nextHighlightStory();
+                    }
+                });
+            }
+
+            if (highlightStoryPause) {
+                highlightStoryPause.addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    highlightPaused = !highlightPaused;
+                    updatePauseButton();
+                    if (activeHighlightVideo) {
+                        if (highlightPaused) {
+                            activeHighlightVideo.pause();
+                        } else {
+                            activeHighlightVideo.play().catch(() => {});
+                        }
+                    }
+                });
+            }
+
+            if (highlightStoryMute) {
+                highlightStoryMute.addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    highlightMuted = !highlightMuted;
+                    syncMuteState();
+                });
+            }
+
             document.querySelectorAll('.highlight-item').forEach((highlight) => {
                 highlight.addEventListener('click', () => {
-                    const highlightName = highlight.querySelector('.highlight-name').textContent;
-                    alert(`Viewing ${highlightName} highlight`);
+                    const id = highlight.getAttribute('data-highlight-id');
+                    openHighlightModal(id);
                 });
             });
+
+            document.querySelectorAll('#highlightThumbs .thumb').forEach((thumb) => {
+                thumb.addEventListener('click', () => {
+                    const id = thumb.getAttribute('data-highlight-id');
+                    openHighlightModal(id);
+                });
+            });
+
+            if (highlightSequence.length) {
+                goToHighlight(0, 0);
+            }
 
             // Hover-to-play for reel videos; reset to first frame on leave (like explore trending videos).
             const reelVideos = document.querySelectorAll('.reel-thumb video');
