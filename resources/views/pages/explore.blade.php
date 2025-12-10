@@ -186,15 +186,21 @@
 
         .suggestions-grid {
             display: flex;
-            overflow-x: hidden;
+            overflow-x: auto;
             scroll-behavior: smooth;
             gap: 15px;
             padding: 10px 0;
             -ms-overflow-style: none;
             scrollbar-width: none;
+            scroll-snap-type: x mandatory;
         }
         .suggestions-grid::-webkit-scrollbar {
             display: none;
+        }
+
+        .suggestion-item {
+            scroll-snap-align: start;
+            flex: 0 0 auto;
         }
 
         .scroll-btn {
@@ -529,8 +535,8 @@
                     </div>
                     
                     <div class="masonry-item">
-                        <video autoplay muted loop playsinline>
-                            <source src="videos/my_video_1.mp4" type="video/mp4">
+                        <video muted loop playsinline>
+                            <source src="{{ asset('videos/bg.mp4') }}" type="video/mp4">
                         </video>
                         <div class="media-type-icon">
                             <i class="fas fa-play"></i>
@@ -576,8 +582,8 @@
                     </div>
                     
                     <div class="masonry-item">
-                        <video autoplay muted loop playsinline>
-                            <source src="videos/my_video_2.mp4" type="video/mp4">
+                        <video muted loop playsinline>
+                            <source src="{{ asset('videos/bg.mp4') }}" type="video/mp4">
                         </video>
                         <div class="media-type-icon">
                             <i class="fas fa-play"></i>
@@ -644,77 +650,115 @@
 
 @push('scripts')
     <script>
-        document.querySelectorAll('.follow-btn').forEach(button => {
-            button.addEventListener('click', function(e) {
-                e.stopPropagation();
-                if (this.textContent === 'Follow') {
-                    this.textContent = 'Following';
-                    this.style.backgroundColor = '#333';
-                } else {
-                    this.textContent = 'Follow';
-                    this.style.backgroundColor = '';
-                }
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.follow-btn').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    if (this.textContent === 'Follow') {
+                        this.textContent = 'Following';
+                        this.style.backgroundColor = '#333';
+                    } else {
+                        this.textContent = 'Follow';
+                        this.style.backgroundColor = '';
+                    }
+                });
             });
-        });
 
-        const searchInput = document.getElementById('searchInput');
-        searchInput.addEventListener('input', function() {
-            const searchTerm = this.value.toLowerCase();
-            if (searchTerm.length > 2) {
-                console.log('Searching for:', searchTerm);
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    const searchTerm = this.value.toLowerCase();
+                    if (searchTerm.length > 2) {
+                        console.log('Searching for:', searchTerm);
+                    }
+                });
             }
-        });
 
-        document.querySelectorAll('.masonry-item').forEach(item => {
-            item.addEventListener('click', function() {
-                alert('Opening post detail view');
+            document.querySelectorAll('.masonry-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    alert('Opening post detail view');
+                });
             });
-        });
 
-        document.querySelectorAll('.suggestion-item').forEach(item => {
-            item.addEventListener('click', function() {
-                const suggestionName = this.querySelector('.suggestion-name').textContent;
-                alert(`Viewing ${suggestionName} profile`);
+            document.querySelectorAll('.suggestion-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const suggestionName = this.querySelector('.suggestion-name').textContent;
+                    alert(`Viewing ${suggestionName} profile`);
+                });
             });
-        });
 
-        const suggestionsGrid = document.querySelector('.suggestions-grid');
-        const scrollLeftBtn = document.getElementById('scrollLeftBtn');
-        const scrollRightBtn = document.getElementById('scrollRightBtn');
-        
-        const cardScrollAmount = 250 + 15;
+            // Hover-to-play for trending videos; reset to start on leave.
+            const masonryVideos = document.querySelectorAll('.masonry-item video');
+            masonryVideos.forEach(video => {
+                const card = video.closest('.masonry-item');
+                if (!card) return;
 
-        function checkScrollButtons() {
-            if (!suggestionsGrid) return;
+                video.pause();
+                video.currentTime = 0;
+
+                card.addEventListener('mouseenter', () => {
+                    video.play().catch(() => {});
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    video.pause();
+                    video.currentTime = 0;
+                });
+            });
+
+            const suggestionsGrid = document.querySelector('.suggestions-grid');
+            const suggestionItems = suggestionsGrid ? Array.from(suggestionsGrid.querySelectorAll('.suggestion-item')) : [];
+            const scrollLeftBtn = document.getElementById('scrollLeftBtn');
+            const scrollRightBtn = document.getElementById('scrollRightBtn');
+            let activeSuggestionIndex = 0;
             
-            if (suggestionsGrid.scrollLeft <= 0) {
-                scrollLeftBtn.classList.add('hidden');
-            } else {
-                scrollLeftBtn.classList.remove('hidden');
+            if (suggestionsGrid && scrollLeftBtn && scrollRightBtn && suggestionItems.length) {
+                const clampIndex = (idx) => Math.min(Math.max(idx, 0), suggestionItems.length - 1);
+
+                const checkScrollButtons = () => {
+                    if (suggestionsGrid.scrollLeft <= 0) {
+                        scrollLeftBtn.classList.add('hidden');
+                    } else {
+                        scrollLeftBtn.classList.remove('hidden');
+                    }
+
+                    const maxScroll = suggestionsGrid.scrollWidth - suggestionsGrid.clientWidth;
+                    if (suggestionsGrid.scrollLeft >= maxScroll - 1) {
+                        scrollRightBtn.classList.add('hidden');
+                    } else {
+                        scrollRightBtn.classList.remove('hidden');
+                    }
+                };
+
+                const scrollToIndex = (idx) => {
+                    activeSuggestionIndex = clampIndex(idx);
+                    const target = suggestionItems[activeSuggestionIndex];
+                    if (!target) return;
+                    target.scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
+                    setTimeout(checkScrollButtons, 180);
+                };
+
+                scrollLeftBtn.addEventListener('click', () => {
+                    scrollToIndex(activeSuggestionIndex - 1);
+                });
+
+                scrollRightBtn.addEventListener('click', () => {
+                    scrollToIndex(activeSuggestionIndex + 1);
+                });
+
+                suggestionsGrid.addEventListener('scroll', () => {
+                    // Update index based on current scroll position to keep arrows accurate.
+                    const current = suggestionItems.findIndex(item => item.offsetLeft >= suggestionsGrid.scrollLeft - 10);
+                    if (current >= 0) {
+                        activeSuggestionIndex = clampIndex(current);
+                    }
+                    checkScrollButtons();
+                });
+
+                window.addEventListener('resize', checkScrollButtons);
+                window.addEventListener('load', checkScrollButtons);
+                checkScrollButtons();
             }
-
-            const maxScroll = suggestionsGrid.scrollWidth - suggestionsGrid.clientWidth;
-            
-            if (suggestionsGrid.scrollLeft >= maxScroll - 1) {
-                scrollRightBtn.classList.add('hidden');
-            } else {
-                scrollRightBtn.classList.remove('hidden');
-            }
-        }
-
-        scrollLeftBtn.addEventListener('click', () => {
-            suggestionsGrid.scrollLeft -= cardScrollAmount;
-        });
-
-        scrollRightBtn.addEventListener('click', () => {
-            suggestionsGrid.scrollLeft += cardScrollAmount;
-        });
-
-        suggestionsGrid.addEventListener('scroll', checkScrollButtons);
-
-        window.addEventListener('load', function() {
-            console.log('Explore page loaded');
-            checkScrollButtons();
         });
     </script>
 @endpush
